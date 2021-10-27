@@ -1,0 +1,28 @@
+html,
+body {
+  height: 100%;
+}
+nav {
+  background-color: transparent;
+}
+.navbar a,
+.nav-link {
+  color: #1b1f23;
+}
+body {
+  background-image: url(../img/bs.jpeg);
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+button {
+  background-color: transparent;
+}
+th {
+  text-transform: uppercase;
+}
+.modal-content {
+  background-color: transparent;
+  color: white;
+}
