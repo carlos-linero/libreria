@@ -52,7 +52,7 @@
                     <th scope="col">Editorial</th>
                     <th scope="col">Bibliografia</th>
                     <th scope="col">Editar</th>
-                    <th scope="col">Habilitar/Deshabilitar</th>
+                    <th scope="col">Des/Habilitar</th>
                 </tr>
             </thead>
             <tbody>
@@ -100,6 +100,7 @@
         </table>
         </div>
     </main>
+     <!-- hamodificar editorial --> 
     <div class="table-responsive">
         <div th:each="editorial : ${editoriales}">
             <div class="modal fade" th:attr="id=|modificar${editorial.id}|" tabindex="-1" aria-hidden="true">
@@ -126,7 +127,7 @@
                     </div>
                 </div>
             </div>
-
+            <!-- habilitar/deshabilitar editorial -->
             <div class="modal fade" th:attr="id=|habilitarDeshabilitar${editorial.id}|" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -148,7 +149,7 @@
                 </div>
             </div>
         </div>
-        <!-- agregar autor -->
+        <!-- agregar editorial -->
         <div class="modal fade" id="agregarEditorial" tabindex="-1" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">

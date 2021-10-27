@@ -84,4 +84,14 @@ public class AutorServicio implements ValidacionInterface {
             throw e;
         }
     }
+
+    @Transactional(readOnly = true)
+    public Autor obtenerAutor(String id) throws Exception {
+        try {
+            //return autorRepositorio.obtenerAutores(true);
+            return autorRepositorio.findById(id).get();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 }

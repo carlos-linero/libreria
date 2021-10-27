@@ -81,4 +81,14 @@ public class EditorialServicio implements ValidacionInterface {
             throw e;
         }
     }
+
+    @Transactional(readOnly = true)
+    public Editorial obteneEditorial(String id) throws Exception {
+        try {
+            //return autorRepositorio.obtenerAutores(true);
+            return editorialRepositorio.findById(id).get();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 }
