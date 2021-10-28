@@ -46,20 +46,26 @@
     </nav>
     <div th:if="${editoriales.isEmpty()}" class="text-center">
         <h5>No hay ninguna Editorial registrada</h5>
-        <button title="Agregar Editorial" type="button" class="btn" data-bs-toggle="modal" data-bs-target="#agregarEditorial">
+        <button title="Agregar Editorial" type="button" class="btn" data-bs-toggle="modal"
+            data-bs-target="#agregarEditorial">
             Agregar Editorial
         </button>
     </div>
-    <div class="alert alert-secondary alert-dismissible fade show" role="alert" th:if="${exito != null}">
-        <strong th:text="${exito}"></strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    
-    <div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${error != null}">
-        <strong th:text="${error}"></strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class=" container-fluid">
+        <div class="row justify-content-center">
+            <div class="alert alert-secondary alert-dismissible fade show col-5 text-center" role="alert" th:if="${exito != null}">
+                <strong th:text="${exito}"></strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div class="alert alert-warning alert-dismissible fade show col-5 text-center" role="alert" th:if="${error != null}">
+                <strong th:text="${error}"></strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
     </div>
     <main th:unless="${editoriales.isEmpty()}" class="container-fluid">
+        <div class="table-responsive">
         <table class="table table-hover text-center table-sm table-borderless">
             <thead>
                 <tr>
@@ -114,7 +120,7 @@
         </table>
         </div>
     </main>
-     <!-- Editar editorial --> 
+    <!-- Editar editorial -->
     <div class="table-responsive">
         <div th:each="editorial : ${editoriales}">
             <div class="modal fade" th:attr="id=|modificar${editorial.id}|" tabindex="-1" aria-hidden="true">
@@ -128,13 +134,12 @@
                             <form autocomplete="off" th:action="@{editorial/modificar-nombre}" method="POST"
                                 class="needs-validation" novalidate>
                                 <label th:attr="for=${editorial.id}">Nombre del la Editorial</label>
-                                <input class="form-control" th:value="${editorial.nombre}"
-                                    type="text" name="nombre" placeholder="Nombre" required>
+                                <input class="form-control" th:value="${editorial.nombre}" type="text" name="nombre"
+                                    placeholder="Nombre" required>
                                 <input type="hidden" th:value="${editorial.estado}" name="estado">
                                 <input type="hidden" th:value="${editorial.id}" name="id">
                                 <div class="invalid-feedback">creo que se te olvido algo :(</div>
-                                <button title="Guardar Cambios" type="submit" value="Submit"
-                                    class="btn no-btn">Guardar
+                                <button title="Guardar Cambios" type="submit" value="Submit" class="btn no-btn">Guardar
                                     Cambios</button>
                             </form>
                         </div>
@@ -142,7 +147,8 @@
                 </div>
             </div>
             <!-- habilitar/deshabilitar editorial -->
-            <div class="modal fade" th:attr="id=|habilitarDeshabilitar${editorial.id}|" tabindex="-1" aria-hidden="true">
+            <div class="modal fade" th:attr="id=|habilitarDeshabilitar${editorial.id}|" tabindex="-1"
+                aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">

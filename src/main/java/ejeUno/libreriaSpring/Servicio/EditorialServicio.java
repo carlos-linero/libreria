@@ -86,6 +86,8 @@ public class EditorialServicio implements ValidacionInterface {
     public Editorial obteneEditorial(String id) throws Exception {
         try {
             //return autorRepositorio.obtenerAutores(true);
+             Optional<Editorial> respuesta = editorialRepositorio.findById(id);
+            validaPresencia(respuesta, "Editorial");
             return editorialRepositorio.findById(id).get();
         } catch (Exception e) {
             throw e;

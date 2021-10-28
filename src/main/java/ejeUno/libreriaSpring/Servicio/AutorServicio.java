@@ -89,6 +89,8 @@ public class AutorServicio implements ValidacionInterface {
     public Autor obtenerAutor(String id) throws Exception {
         try {
             //return autorRepositorio.obtenerAutores(true);
+             Optional<Autor> respuesta = autorRepositorio.findById(id);
+             validaPresencia(respuesta, "Autor");
             return autorRepositorio.findById(id).get();
         } catch (Exception e) {
             throw e;
