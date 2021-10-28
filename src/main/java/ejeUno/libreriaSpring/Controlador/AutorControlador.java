@@ -1,9 +1,12 @@
 package ejeUno.libreriaSpring.Controlador;
 
+import static com.sun.corba.se.spi.presentation.rmi.StubAdapter.request;
 import ejeUno.libreriaSpring.Entidad.Autor;
 import ejeUno.libreriaSpring.Excepciones.MiExcepcion;
 import ejeUno.libreriaSpring.Servicio.AutorServicio;
 import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
@@ -29,18 +34,18 @@ public class AutorControlador {
         }
     }*/
     @GetMapping
-    public ModelAndView mostrarAutores() throws MiExcepcion, Exception {
-        try {
+    public ModelAndView mostrarAutores(HttpServletRequest request) throws MiExcepcion, Exception {
+ 
             ModelAndView mav = new ModelAndView("autor");
+            Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
+        if (flashMap != null) {
+            mav.addObject("exito", flashMap.get("exito-name"));
+            mav.addObject("error", flashMap.get("error-name"));
+        }
             List<Autor> autores = autorServicio.obtenerAutores();
             autores.sort(Autor.compararNombre);
             mav.addObject("autores", autores);
             return mav;
-        } catch (MiExcepcion es) {
-            throw es;
-        } catch (Exception e) {
-            throw e;
-        }
     }
 
     /*@GetMapping("/crear")
@@ -57,33 +62,36 @@ public class AutorControlador {
     }*/
 
     @PostMapping("/guardar")
-    public RedirectView guardar(@RequestParam String nombre) throws Exception {
+    public RedirectView guardar(@RequestParam String nombre, RedirectAttributes attributes) throws Exception {
         try {
             autorServicio.crearAutor(nombre);
-            return new RedirectView("/autor");
+            attributes.addFlashAttribute("exito-name", "El Autor ha sido registrado exitosamente");
         } catch (Exception e) {
-            throw e;
+            attributes.addFlashAttribute("error-name", e.getMessage());
         }
+        return new RedirectView("/autor");
     }
 
     @PostMapping("/modificar-nombre")
-    public RedirectView guardar(@RequestParam String nombre, @RequestParam Boolean estado, @RequestParam String id) throws Exception {
+    public RedirectView guardar(@RequestParam String nombre, @RequestParam Boolean estado, @RequestParam String id, RedirectAttributes attributes) throws Exception {
         try {
             autorServicio.modificarAutor(id, nombre, estado);
-            return new RedirectView("/autor");
+            attributes.addFlashAttribute("exito-name", "El Autor ha sido editado exitosamente");
         } catch (Exception e) {
-            throw e;
+            attributes.addFlashAttribute("error-name", e.getMessage());
         }
+        return new RedirectView("/autor");
     }
 
     @PostMapping("/modificar-estado")
-    public RedirectView guardar(@RequestParam Boolean estado, @RequestParam String id) throws Exception {
+    public RedirectView guardar(@RequestParam Boolean estado, @RequestParam String id, RedirectAttributes attributes) throws Exception {
         try {
             autorServicio.modificarAutor(id, estado);
-            return new RedirectView("/autor");
+            attributes.addFlashAttribute("exito-name", "El Autor ha sido "+ ((estado)?"deshabilitado":"habilitado") +" exitosamente");
         } catch (Exception e) {
-            throw e;
+            attributes.addFlashAttribute("error-name", e.getMessage());
         }
+        return new RedirectView("/autor");
     }
 
 }

@@ -63,6 +63,15 @@
             </button>
         </div>
     </div>
+    <div class="alert alert-secondary alert-dismissible fade show" role="alert" th:if="${exito != null}">
+        <strong th:text="${exito}"></strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${error != null}">
+        <strong th:text="${error}"></strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
     <main th:unless="${libros.isEmpty()}" class="container-fluid">
         <table class="table table-hover text-center table-sm table-borderless">
             <thead>
