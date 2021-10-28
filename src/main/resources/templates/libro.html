@@ -34,7 +34,13 @@
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/editorial}">Editorial</a>
                     </li>
-                    <li class="nav-item">
+                    <li th:if="${autores.isEmpty()} or ${editoriales.isEmpty()}" class="nav-item">
+                        <button disabled title="Agregar Libro" type="button" class="btn" data-bs-toggle="modal"
+                            data-bs-target="#agregarLibro">
+                            <i class="far fa-plus-square"></i>
+                        </button>
+                    </li>
+                    <li th:unless="${autores.isEmpty()} or ${editoriales.isEmpty()}" class="nav-item">
                         <button title="Agregar Libro" type="button" class="btn" data-bs-toggle="modal"
                             data-bs-target="#agregarLibro">
                             <i class="far fa-plus-square"></i>
@@ -44,8 +50,20 @@
             </div>
         </div>
     </nav>
-
-    <main class="container-fluid">
+    <div th:if="${libros.isEmpty()}" class="text-center">
+        <div th:if="${autores.isEmpty()} or ${editoriales.isEmpty()}">
+            <h4>No hay ningún libro registrado</h4>
+            <h5>Para poder agregar un libro primero debes tener al menos un autor y una editorial registrada</h5>
+        </div>
+        <div th:unless="${autores.isEmpty()} or ${editoriales.isEmpty()}">
+            <h5>No hay ningun libro registrado</h5>
+            <button title="Agregar Libro" type="button" class="btn" data-bs-toggle="modal"
+                data-bs-target="#agregarLibro">
+                Agregar Libro
+            </button>
+        </div>
+    </div>
+    <main th:unless="${libros.isEmpty()}" class="container-fluid">
         <table class="table table-hover text-center table-sm table-borderless">
             <thead>
                 <tr>
@@ -61,13 +79,106 @@
                     <td th:text="${libro.nombre}"></td>
                     <td th:text="${libro.autor.nombre}"></td>
                     <td th:text="${libro.editorial.nombre}"></td>
-                    <td><i class="far fa-edit"></i></td>
-                    <td><i class="fas fa-eraser"></i></td>
+                    <td th:if="${libro.estado}">
+                        <button class="btn" title="Editar" type="button" data-bs-toggle="modal"
+                            th:attr="data-bs-target=|#modificar${libro.id}|">
+                            <i class="far fa-edit"></i>
+                        </button>
+                    </td>
+                    <td th:unless="${libro.estado}">
+                        <button disabled class="btn" title="Editar" type="button" data-bs-toggle="modal"
+                            th:attr="data-bs-target=|#modificar${libro.id}|">
+                            <i class="far fa-edit"></i>
+                        </button>
+                    </td>
+                    <td th:if="${libro.estado}">
+                        <button class="btn" title="Deshabilitar" type="button" data-bs-toggle="modal"
+                            th:attr="data-bs-target=|#habilitarDeshabilitar${libro.id}|">
+                            <i class="far fa-minus-square"></i>
+                        </button>
+                    </td>
+                    <td th:unless="${libro.estado}">
+                        <button class="btn" title="Habilitar" type="button" data-bs-toggle="modal"
+                            th:attr="data-bs-target=|#habilitarDeshabilitar${libro.id}|">
+                            <i class="far fa-plus-square"></i>
+                        </button>
+                    </td>
                 </tr>
             </tbody>
         </table>
     </main>
-    <!-- agregar editorial -->
+
+    <!-- Editar Libro -->
+    <div th:each="libro : ${libros}">
+        <div class="modal fade" th:attr="id=|modificar${libro.id}|" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modificar Libro</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <form method="POST" enctype="multipart/form-data" th:action="@{libro/editar}">
+
+                                <label>ISBN</label> <br>
+                                <input class="form-control" type="number" name="isbn" placeholder="Ingrese ISBN"
+                                    th:value="${libro.isbn}"> <br>
+                                <label>Titulo</label> <br>
+                                <input class="form-control" type="text" name="nombre" placeholder="Ingrese titulo"
+                                    th:value="${libro.nombre}"> <br>
+                                <label>Año</label> <br>
+                                <input class="form-control" type="text" name="anio" placeholder="Ingrese año"
+                                    th:value="${libro.anio}"> <br>
+                                <label>Ejemplares</label> <br>
+                                <input class="form-control" type="number" name="Ejemplares"
+                                    placeholder="Ingrese ejemplares" th:value="${libro.ejemplares}"> <br>
+                                <input type="hidden" th:value="${libro.id}" name="id">
+                                <input type="hidden" th:value="${libro.estado}" name="estado">
+                                <!--<label>Autor</label> <br>
+                            <select class="form-select" aria-label="Default select example" name="autor">
+                                <option selected disabled value="">Selecciona un autor</option>
+                                <option th:each="autor : ${autores}" th:text="${autor.nombre}" th:value="${autor.id}"></option>
+                            </select>
+                            <label>Editorial</label> <br>
+                            <select class="form-select" aria-label="Default select example" name="editorial">
+                                <option selected disabled value="">Selecciona una editorial</option>
+                                <option th:each="editorial : ${editoriales}" th:text="${editorial.nombre}" th:value="${editorial.id}">
+                                </option>
+                            </select>
+                            <br>-->
+                                <button type="submit" class="btn no-btn">Cargar datos</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- habilitar/deshabilitar Libro -->
+        <div class="modal fade" th:attr="id=|habilitarDeshabilitar${libro.id}|" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Deshabilitar Libro</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form autocomplete="off" th:action="@{libro/modificar-estado}" method="POST">
+                            <div><span th:text="|Confirmas el cambio de estado de el libro: ${libro.nombre}|"></span>
+                            </div>
+                            <input type="hidden" th:attr="value=${libro.estado}" name="estado">
+                            <input type="hidden" th:attr="value=${libro.id}" name="id">
+                            <button title="Confirmar" type="submit" value="Submit" class="btn no-btn">Si</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Agregar Libro -->
     <div class="modal fade" id="agregarLibro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
@@ -86,19 +197,22 @@
                             <label>Año</label> <br>
                             <input class="form-control" type="text" name="anio" placeholder="Ingrese año"> <br>
                             <label>Ejemplares</label> <br>
-                            <input class="form-control" type="number" name="Ejemplares" placeholder="Ingrese ejemplares"> <br>
+                            <input class="form-control" type="number" name="Ejemplares"
+                                placeholder="Ingrese ejemplares"> <br>
                             <label>Autor</label> <br>
                             <select class="form-select" aria-label="Default select example" name="autor">
                                 <option selected disabled value="">Selecciona un autor</option>
-                                <option th:each="autor : ${autores}" th:text="${autor.nombre}" th:value="${autor.id}"></option>
+                                <option th:each="autor : ${autores}" th:text="${autor.nombre}" th:value="${autor.id}">
+                                </option>
                             </select>
                             <label>Editorial</label> <br>
                             <select class="form-select" aria-label="Default select example" name="editorial">
                                 <option selected disabled value="">Selecciona una editorial</option>
-                                <option th:each="editorial : ${editoriales}" th:text="${editorial.nombre}" th:value="${editorial.id}"></option>
+                                <option th:each="editorial : ${editoriales}" th:text="${editorial.nombre}"
+                                    th:value="${editorial.id}"></option>
                             </select>
                             <br>
-                            <button type="submit" class="btn">Cargar datos</button>
+                            <button type="submit" class="btn no-btn">Cargar datos</button>
                         </form>
                     </div>
                 </div>

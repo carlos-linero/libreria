@@ -19,7 +19,7 @@ public class LibroServicio implements ValidacionInterface {
     private LibroRepositorio libroRepositorio;
 
     @Transactional
-    public void crearLibro(Long isbn, String nombre, Integer anio, Integer ejemplares, Autor autor, Editorial editorial) throws Exception, MiExcepcion {
+    public void guardarLibro(Long isbn, String nombre, Integer anio, Integer ejemplares, Autor autor, Editorial editorial) throws Exception, MiExcepcion {
         try {
 
             validacionNombre(nombre);
@@ -38,6 +38,30 @@ public class LibroServicio implements ValidacionInterface {
             libro.setEjemplaresRestantes(ejemplares);
             libro.setAutor(autor);
             libro.setEditorial(editorial);
+            libroRepositorio.save(libro);
+        } catch (MiExcepcion es) {
+            throw es;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Transactional
+    public void guardarLibro(Long isbn, String nombre, Integer anio, Integer ejemplares, String id, Boolean estado) throws Exception, MiExcepcion {
+        try {
+            validaEstado(estado);
+            validacionNombre(nombre);
+            validacionAnio(anio);
+            validaCantidadEjemplar(ejemplares);
+            Optional<Libro> respuesta = libroRepositorio.findById(id);
+            validaPresencia(respuesta, "Libro");
+            
+            Libro libro = libroRepositorio.findById(id).get();
+            libro.setIsbn(isbn);
+            libro.setNombre(nombre);
+            libro.setAnio(anio);
+            libro.setEjemplares(ejemplares);
+       
             libroRepositorio.save(libro);
         } catch (MiExcepcion es) {
             throw es;
@@ -66,17 +90,16 @@ public class LibroServicio implements ValidacionInterface {
     }
 
     @Transactional
-    public void modificarLibro(String id,  Integer cantTotal, Integer cantPrestamo, Integer cantActual, Boolean estado) throws Exception, MiExcepcion {
+    public void modificarLibro(String id, Integer cantTotal, Integer cantPrestamo, Integer cantActual, Boolean estado) throws Exception, MiExcepcion {
         try {
             validaEstado(estado);
             Optional<Libro> respuesta = libroRepositorio.findById(id);
             validaPresencia(respuesta, "Editorial");
             validaTransaccion(cantPrestamo, cantActual, cantActual);
-            
 
             Libro libro = libroRepositorio.findById(id).get();
-            libro.setEjemplaresPrestados(libro.getEjemplaresPrestados()+cantPrestamo);
-            libro.setEjemplaresRestantes(Math.abs(cantPrestamo-cantActual));
+            libro.setEjemplaresPrestados(libro.getEjemplaresPrestados() + cantPrestamo);
+            libro.setEjemplaresRestantes(Math.abs(cantPrestamo - cantActual));
 
             libroRepositorio.save(libro);
         } catch (MiExcepcion es) {
@@ -85,19 +108,18 @@ public class LibroServicio implements ValidacionInterface {
             throw e;
         }
     }
-    
-        @Transactional
-    public void modificarLibro(String id,  Boolean estado, Integer cantTotal, Integer cantDevolucion, Integer cantActual) throws Exception, MiExcepcion {
+
+    @Transactional
+    public void modificarLibro(String id, Boolean estado, Integer cantTotal, Integer cantDevolucion, Integer cantActual) throws Exception, MiExcepcion {
         try {
             validaEstado(estado);
             Optional<Libro> respuesta = libroRepositorio.findById(id);
             validaPresencia(respuesta, "Editorial");
             validaTransaccion(cantDevolucion, cantActual, cantActual);
-            
 
             Libro libro = libroRepositorio.findById(id).get();
-            libro.setEjemplaresPrestados(libro.getEjemplaresPrestados()-cantDevolucion);
-            libro.setEjemplaresRestantes(cantDevolucion+cantActual);
+            libro.setEjemplaresPrestados(libro.getEjemplaresPrestados() - cantDevolucion);
+            libro.setEjemplaresRestantes(cantDevolucion + cantActual);
 
             libroRepositorio.save(libro);
         } catch (MiExcepcion es) {
@@ -106,8 +128,8 @@ public class LibroServicio implements ValidacionInterface {
             throw e;
         }
     }
-    
-        @Transactional(readOnly = true)
+
+    @Transactional(readOnly = true)
     public List<Libro> obtenerLibros() throws Exception {
         try {
             return libroRepositorio.findAll();

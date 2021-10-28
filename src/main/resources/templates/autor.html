@@ -44,8 +44,14 @@
             </div>
         </div>
     </nav>
-
-    <main class="container-fluid">
+    <div th:if="${autores.isEmpty()}" class="text-center">
+        <h5>No hay ningun Autor registrado</h5>
+        <button title="Agregar Autor" type="button" class="btn" data-bs-toggle="modal"
+            data-bs-target="#agregarAutor">
+            Agregar Autor
+        </button>
+    </div>
+    <main th:unless="${autores.isEmpty()}" class="container-fluid">
         <div class="table-responsive">
             <table class="table table-hover text-center table-sm table-borderless">
                 <thead>
@@ -73,15 +79,15 @@
                         </td>
 
                         <td th:if="${autor.estado}">
-                            <button class="btn" title="Editar" type="button"
-                                data-bs-toggle="modal" th:attr="data-bs-target=|#modificar${autor.id}|">
+                            <button class="btn" title="Editar" type="button" data-bs-toggle="modal"
+                                th:attr="data-bs-target=|#modificar${autor.id}|">
                                 <i class="far fa-edit"></i>
                             </button>
                         </td>
 
                         <td th:unless="${autor.estado}">
-                            <button disabled class="btn" title="Editar" type="button"
-                                data-bs-toggle="modal" th:attr="data-bs-target=|#modificar${autor.id}|">
+                            <button disabled class="btn" title="Editar" type="button" data-bs-toggle="modal"
+                                th:attr="data-bs-target=|#modificar${autor.id}|">
                                 <i class="far fa-edit"></i>
                             </button>
                         </td>
@@ -116,12 +122,12 @@
                         <form autocomplete="off" th:action="@{autor/modificar-nombre}" method="POST"
                             class="needs-validation" novalidate>
                             <label th:attr="for=${autor.id}">Nombre del Autor</label>
-                            <input class="form-control" th:attr="placeholder=${autor.nombre}" required type="text"
-                                name="nombre">
-                            <input type="hidden" th:attr="value=${autor.estado}" name="estado">
-                            <input type="hidden" th:attr="value=${autor.id}" name="id">
+                            <input class="form-control" th:value="${autor.nombre}" placeholder="Nombre" type="text"
+                                name="nombre" required>
+                            <input type="hidden" th:value="${autor.estado}" name="estado">
+                            <input type="hidden" th:value="${autor.id}" name="id">
                             <div class="invalid-feedback">creo que se te olvido algo :(</div>
-                            <button title="Guardar Cambios" type="submit" value="Submit" class="btn btn-light">Guardar
+                            <button title="Guardar Cambios" type="submit" value="Submit" class="btn no-btn">Guardar
                                 Cambios</button>
                         </form>
                     </div>
@@ -142,7 +148,7 @@
                             </div>
                             <input type="hidden" th:attr="value=${autor.estado}" name="estado">
                             <input type="hidden" th:attr="value=${autor.id}" name="id">
-                            <button title="Confirmar" type="submit" value="Submit" class="btn btn-light">si</button>
+                            <button title="Confirmar" type="submit" value="Submit" class="btn no-btn">si</button>
                         </form>
                     </div>
                 </div>
@@ -163,7 +169,7 @@
                         <label for="nombre">Nombre del Autor</label>
                         <input class="form-control" id="nombre" placeholder="Nombre" required type="text" name="nombre">
                         <div class="invalid-feedback">creo que se te olvido algo :(</div>
-                        <button title="Guardar Autor" type="submit" value="Submit" class="btn btn-light">Agregar
+                        <button title="Guardar Autor" type="submit" value="Submit" class="btn no-btn">Agregar
                             Autor</button>
                     </form>
                 </div>

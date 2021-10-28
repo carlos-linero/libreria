@@ -7,7 +7,6 @@ import ejeUno.libreriaSpring.Excepciones.MiExcepcion;
 import ejeUno.libreriaSpring.Servicio.AutorServicio;
 import ejeUno.libreriaSpring.Servicio.EditorialServicio;
 import ejeUno.libreriaSpring.Servicio.LibroServicio;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,12 +31,9 @@ public class LibroControlador {
     public ModelAndView mostrarLibros() throws MiExcepcion, Exception {
         try {
             ModelAndView mav = new ModelAndView("libro");
-            List<Libro> libros = libroServicio.obtenerLibros();
-            List<Autor> autores = autorServicio.obtenerAutores();
-            List<Editorial> editoriales = editorialServicio.obtenerEditoriales();
-            mav.addObject("libros", libros);
-            mav.addObject("autores", autores);
-            mav.addObject("editoriales", editoriales);
+            mav.addObject("libros", libroServicio.obtenerLibros());
+            mav.addObject("autores", autorServicio.obtenerAutores());
+            mav.addObject("editoriales", editorialServicio.obtenerEditoriales());
             return mav;
         } catch (MiExcepcion es) {
             throw es;
@@ -51,7 +47,27 @@ public class LibroControlador {
         try {
             Autor autorAux = autorServicio.obtenerAutor(autor);
             Editorial editorialAux = editorialServicio.obteneEditorial(editorial);
-            libroServicio.crearLibro(isbn, nombre, anio, Ejemplares, autorAux, editorialAux);
+            libroServicio.guardarLibro(isbn, nombre, anio, Ejemplares, autorAux, editorialAux);
+            return new RedirectView("/libro");
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @PostMapping("/editar")
+    public RedirectView guardar(@RequestParam Long isbn, @RequestParam String nombre, @RequestParam Integer anio, @RequestParam Integer Ejemplares, @RequestParam String id, @RequestParam Boolean estado) throws Exception {
+        try {
+            libroServicio.guardarLibro(isbn, nombre, anio, Ejemplares, id, estado);
+            return new RedirectView("/libro");
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @PostMapping("/modificar-estado")
+    public RedirectView guardar(@RequestParam Boolean estado, @RequestParam String id) throws Exception {
+        try {
+            libroServicio.modificarLibro(id, estado);
             return new RedirectView("/libro");
         } catch (Exception e) {
             throw e;

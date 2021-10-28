@@ -44,8 +44,13 @@
             </div>
         </div>
     </nav>
-
-    <main class="container-fluid">
+    <div th:if="${editoriales.isEmpty()}" class="text-center">
+        <h5>No hay ninguna Editorial registrada</h5>
+        <button title="Agregar Editorial" type="button" class="btn" data-bs-toggle="modal" data-bs-target="#agregarEditorial">
+            Agregar Editorial
+        </button>
+    </div>
+    <main th:unless="${editoriales.isEmpty()}" class="container-fluid">
         <table class="table table-hover text-center table-sm table-borderless">
             <thead>
                 <tr>
@@ -100,7 +105,7 @@
         </table>
         </div>
     </main>
-     <!-- hamodificar editorial --> 
+     <!-- Editar editorial --> 
     <div class="table-responsive">
         <div th:each="editorial : ${editoriales}">
             <div class="modal fade" th:attr="id=|modificar${editorial.id}|" tabindex="-1" aria-hidden="true">
@@ -114,13 +119,13 @@
                             <form autocomplete="off" th:action="@{editorial/modificar-nombre}" method="POST"
                                 class="needs-validation" novalidate>
                                 <label th:attr="for=${editorial.id}">Nombre del la Editorial</label>
-                                <input class="form-control" th:attr="placeholder=${editorial.nombre}" required
-                                    type="text" name="nombre">
-                                <input type="hidden" th:attr="value=${editorial.estado}" name="estado">
-                                <input type="hidden" th:attr="value=${editorial.id}" name="id">
+                                <input class="form-control" th:value="${editorial.nombre}"
+                                    type="text" name="nombre" placeholder="Nombre" required>
+                                <input type="hidden" th:value="${editorial.estado}" name="estado">
+                                <input type="hidden" th:value="${editorial.id}" name="id">
                                 <div class="invalid-feedback">creo que se te olvido algo :(</div>
                                 <button title="Guardar Cambios" type="submit" value="Submit"
-                                    class="btn btn-light">Guardar
+                                    class="btn no-btn">Guardar
                                     Cambios</button>
                             </form>
                         </div>
@@ -142,7 +147,7 @@
                                 </div>
                                 <input type="hidden" th:attr="value=${editorial.estado}" name="estado">
                                 <input type="hidden" th:attr="value=${editorial.id}" name="id">
-                                <button title="Confirmar" type="submit" value="Submit" class="btn btn-light">Si</button>
+                                <button title="Confirmar" type="submit" value="Submit" class="btn no-btn">Si</button>
                             </form>
                         </div>
                     </div>
@@ -165,7 +170,7 @@
                             <input class="form-control" id="nombre" placeholder="Nombre" required type="text"
                                 name="nombre">
                             <div class="invalid-feedback">creo que se te olvido algo :(</div>
-                            <button title="Guardar Autor" type="submit" value="Submit" class="btn btn-light">Agregar
+                            <button title="Guardar Autor" type="submit" value="Submit" class="btn no-btn">Agregar
                                 Editorial</button>
                         </form>
                     </div>
