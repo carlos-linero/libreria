@@ -58,9 +58,9 @@
             </thead>
             <tbody>
                 <tr th:each="libro : ${libros}">
-                    <th scope="row" th:text="${libro.nombre}"></th>
-                    <td ht:text="${libro.autor.nombre}"></td>
-                    <td ht:text="${libro.editorial.nombre}"></td>
+                    <td th:text="${libro.nombre}"></td>
+                    <td th:text="${libro.autor.nombre}"></td>
+                    <td th:text="${libro.editorial.nombre}"></td>
                     <td><i class="far fa-edit"></i></td>
                     <td><i class="fas fa-eraser"></i></td>
                 </tr>
@@ -69,7 +69,7 @@
     </main>
     <!-- agregar editorial -->
     <div class="modal fade" id="agregarLibro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Agregar Libro</h5>
@@ -77,29 +77,25 @@
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
-                        <form action="" method="POST" enctype="multipart/form-data">
+                        <form method="POST" enctype="multipart/form-data" th:action="@{libro/guardar}">
 
                             <label>ISBN</label> <br>
-                            <input class="form-control" type="text" name="ISBN" placeholder="Ingrese ISBN"> <br>
+                            <input class="form-control" type="number" name="isbn" placeholder="Ingrese ISBN"> <br>
                             <label>Titulo</label> <br>
-                            <input class="form-control" type="text" name="titulo" placeholder="Ingrese titulo"> <br>
+                            <input class="form-control" type="text" name="nombre" placeholder="Ingrese titulo"> <br>
                             <label>Año</label> <br>
-                            <input class="form-control" type="text" name="titulo" placeholder="Ingrese año"> <br>
+                            <input class="form-control" type="text" name="anio" placeholder="Ingrese año"> <br>
                             <label>Ejemplares</label> <br>
-                            <input class="form-control" type="number" name="titulo" placeholder="Ingrese ejemplares"> <br>
+                            <input class="form-control" type="number" name="Ejemplares" placeholder="Ingrese ejemplares"> <br>
                             <label>Autor</label> <br>
-                            <select class="form-select" aria-label="Default select example">
-                                <option selected>Elegir autor</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
+                            <select class="form-select" aria-label="Default select example" name="autor">
+                                <option selected disabled value="">Selecciona un autor</option>
+                                <option th:each="autor : ${autores}" th:text="${autor.nombre}" th:value="${autor.id}"></option>
                             </select>
                             <label>Editorial</label> <br>
-                            <select class="form-select" aria-label="Default select example">
-                                <option selected>Elegir editorial</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
+                            <select class="form-select" aria-label="Default select example" name="editorial">
+                                <option selected disabled value="">Selecciona una editorial</option>
+                                <option th:each="editorial : ${editoriales}" th:text="${editorial.nombre}" th:value="${editorial.id}"></option>
                             </select>
                             <br>
                             <button type="submit" class="btn">Cargar datos</button>
