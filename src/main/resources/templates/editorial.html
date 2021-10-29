@@ -134,13 +134,16 @@
                             <form autocomplete="off" th:action="@{editorial/modificar-nombre}" method="POST"
                                 class="needs-validation" novalidate>
                                 <label th:attr="for=${editorial.id}">Nombre del la Editorial</label>
-                                <input class="form-control" th:value="${editorial.nombre}" type="text" name="nombre"
+                                <input class="form-control" th:attr="placeholder=${editorial.nombre}" type="text" name="nombre"
                                     placeholder="Nombre" required>
                                 <input type="hidden" th:value="${editorial.estado}" name="estado">
                                 <input type="hidden" th:value="${editorial.id}" name="id">
                                 <div class="invalid-feedback">creo que se te olvido algo :(</div>
-                                <button title="Guardar Cambios" type="submit" value="Submit" class="btn no-btn">Guardar
-                                    Cambios</button>
+                                <div class="modal-footer justify-content-center"> 
+                                <button title="Guardar Cambios" type="submit" value="Submit" class="btn no-btn">
+                                    Guardar Cambios
+                                </button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -162,7 +165,9 @@
                                 </div>
                                 <input type="hidden" th:attr="value=${editorial.estado}" name="estado">
                                 <input type="hidden" th:attr="value=${editorial.id}" name="id">
+                                <div class="modal-footer justify-content-center">
                                 <button title="Confirmar" type="submit" value="Submit" class="btn no-btn">Si</button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -185,8 +190,11 @@
                             <input class="form-control" id="nombre" placeholder="Nombre" required type="text"
                                 name="nombre">
                             <div class="invalid-feedback">creo que se te olvido algo :(</div>
-                            <button title="Guardar Autor" type="submit" value="Submit" class="btn no-btn">Agregar
-                                Editorial</button>
+                            <div class="modal-footer justify-content-center">
+                            <button title="Guardar Autor" type="submit" value="Submit" class="btn no-btn">
+                                Agregar Editorial
+                            </button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -196,6 +204,26 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
             crossorigin="anonymous"></script>
+            <script>
+                (function () {
+                    'use strict'
+
+
+                    var forms = document.querySelectorAll('.needs-validation')
+
+
+                    Array.prototype.slice.call(forms)
+                        .forEach(function (form) {
+                            form.addEventListener('submit', function (event) {
+                                if (!form.checkValidity()) {
+                                    event.preventDefault()
+                                    event.stopPropagation()
+                                }
+
+                                form.classList.add('was-validated')
+                            }, false)
+                        })
+                })()</script>
 
 </body>
 

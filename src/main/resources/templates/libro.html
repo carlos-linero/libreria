@@ -66,12 +66,14 @@
 
     <div class=" container-fluid">
         <div class="row justify-content-center">
-            <div class="alert alert-secondary alert-dismissible fade show col-5 text-center" role="alert" th:if="${exito != null}">
+            <div class="alert alert-secondary alert-dismissible fade show col-5 text-center" role="alert"
+                th:if="${exito != null}">
                 <strong th:text="${exito}"></strong>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 
-            <div class="alert alert-warning alert-dismissible fade show col-5 text-center" role="alert" th:if="${error != null}">
+            <div class="alert alert-warning alert-dismissible fade show col-5 text-center" role="alert"
+                th:if="${error != null}">
                 <strong th:text="${error}"></strong>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
@@ -79,48 +81,48 @@
     </div>
     <main th:unless="${libros.isEmpty()}" class="container-fluid">
         <div class="table-responsive">
-        <table class="table table-hover text-center table-sm table-borderless">
-            <thead>
-                <tr>
-                    <th scope="col">Titulo</th>
-                    <th scope="col">Autor</th>
-                    <th scope="col">Editorial</th>
-                    <th scope="col">Editar</th>
-                    <th scope="col">Des/Habilitar</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="libro : ${libros}">
-                    <td th:text="${libro.nombre}"></td>
-                    <td th:text="${libro.autor.nombre}"></td>
-                    <td th:text="${libro.editorial.nombre}"></td>
-                    <td th:if="${libro.estado}">
-                        <button class="btn" title="Editar" type="button" data-bs-toggle="modal"
-                            th:attr="data-bs-target=|#modificar${libro.id}|">
-                            <i class="far fa-edit"></i>
-                        </button>
-                    </td>
-                    <td th:unless="${libro.estado}">
-                        <button disabled class="btn" title="Editar" type="button" data-bs-toggle="modal"
-                            th:attr="data-bs-target=|#modificar${libro.id}|">
-                            <i class="far fa-edit"></i>
-                        </button>
-                    </td>
-                    <td th:if="${libro.estado}">
-                        <button class="btn" title="Deshabilitar" type="button" data-bs-toggle="modal"
-                            th:attr="data-bs-target=|#habilitarDeshabilitar${libro.id}|">
-                            <i class="far fa-minus-square"></i>
-                        </button>
-                    </td>
-                    <td th:unless="${libro.estado}">
-                        <button class="btn" title="Habilitar" type="button" data-bs-toggle="modal"
-                            th:attr="data-bs-target=|#habilitarDeshabilitar${libro.id}|">
-                            <i class="far fa-plus-square"></i>
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+            <table class="table table-hover text-center table-sm table-borderless">
+                <thead>
+                    <tr>
+                        <th scope="col">Titulo</th>
+                        <th scope="col">Autor</th>
+                        <th scope="col">Editorial</th>
+                        <th scope="col">Editar</th>
+                        <th scope="col">Des/Habilitar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="libro : ${libros}">
+                        <td th:text="${libro.nombre}"></td>
+                        <td th:text="${libro.autor.nombre}"></td>
+                        <td th:text="${libro.editorial.nombre}"></td>
+                        <td th:if="${libro.estado}">
+                            <button class="btn" title="Editar" type="button" data-bs-toggle="modal"
+                                th:attr="data-bs-target=|#modificar${libro.id}|">
+                                <i class="far fa-edit"></i>
+                            </button>
+                        </td>
+                        <td th:unless="${libro.estado}">
+                            <button disabled class="btn" title="Editar" type="button" data-bs-toggle="modal"
+                                th:attr="data-bs-target=|#modificar${libro.id}|">
+                                <i class="far fa-edit"></i>
+                            </button>
+                        </td>
+                        <td th:if="${libro.estado}">
+                            <button class="btn" title="Deshabilitar" type="button" data-bs-toggle="modal"
+                                th:attr="data-bs-target=|#habilitarDeshabilitar${libro.id}|">
+                                <i class="far fa-minus-square"></i>
+                            </button>
+                        </td>
+                        <td th:unless="${libro.estado}">
+                            <button class="btn" title="Habilitar" type="button" data-bs-toggle="modal"
+                                th:attr="data-bs-target=|#habilitarDeshabilitar${libro.id}|">
+                                <i class="far fa-plus-square"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </main>
 
@@ -163,7 +165,9 @@
                                 </option>
                             </select>
                             <br>-->
-                                <button type="submit" class="btn no-btn">Cargar datos</button>
+                                <div class="modal-footer justify-content-center">
+                                    <button type="submit" class="btn no-btn">Cargar datos</button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -185,7 +189,9 @@
                             </div>
                             <input type="hidden" th:attr="value=${libro.estado}" name="estado">
                             <input type="hidden" th:attr="value=${libro.id}" name="id">
-                            <button title="Confirmar" type="submit" value="Submit" class="btn no-btn">Si</button>
+                            <div class="modal-footer justify-content-center">
+                                <button title="Confirmar" type="submit" value="Submit" class="btn no-btn">Si</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -204,30 +210,44 @@
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
-                        <form method="POST" enctype="multipart/form-data" th:action="@{libro/guardar}">
+                        <form class="needs-validation" method="POST" enctype="multipart/form-data" th:action="@{libro/guardar}" novalidate>
 
                             <label>ISBN</label> <br>
-                            <input class="form-control" type="number" name="isbn" placeholder="Ingrese ISBN" value="0"> <br>
+                            <input class="form-control" type="number" name="isbn" placeholder="Ingrese ISBN" aria-describedby="isbnAyuda" required>
+                            <div id="isbnAyuda" class="form-text">
+                               El isbn debe comenzar con 978 y contener 13 digitos
+                            </div>
+                            <div class="invalid-feedback">creo que se te olvido algo :(</div>
+                            <br>
                             <label>Titulo</label> <br>
-                            <input class="form-control" type="text" name="nombre" placeholder="Ingrese titulo" value=""> <br>
+                            <input class="form-control" type="text" name="nombre" placeholder="Ingrese titulo" required>
+                            <div class="invalid-feedback">creo que se te olvido algo :(</div>
+                            <br>
                             <label>Año</label> <br>
-                            <input class="form-control" type="text" name="anio" placeholder="Ingrese año" value="0"> <br>
+                            <input class="form-control" type="text" name="anio" placeholder="Ingrese año" required>
+                            <div class="invalid-feedback">creo que se te olvido algo :(</div>
+                            <br>
                             <label>Ejemplares</label> <br>
-                            <input class="form-control" type="number" name="Ejemplares" placeholder="Ingrese ejemplares" value="0"> <br>
+                            <input class="form-control" type="number" name="Ejemplares" placeholder="Ingrese ejemplares"
+                                required> <br>
+                                <div class="invalid-feedback">creo que se te olvido algo :(</div>
                             <label>Autor</label> <br>
-                            <select class="form-select" aria-label="Default select example" name="autor">
-                                <option selected  value="">Selecciona un autor</option>
+                            <select class="form-select" aria-label="Default select example" name="autor" required>
+                                <option selected disabled value="">Selecciona un autor</option>
                                 <option th:each="autor : ${autores}" th:text="${autor.nombre}" th:value="${autor.id}">
                                 </option>
                             </select>
+                            <div class="invalid-feedback">creo que se te olvido algo :(</div>
                             <label>Editorial</label> <br>
-                            <select class="form-select" aria-label="Default select example" name="editorial">
-                                <option selected  value="">Selecciona una editorial</option>
+                            <select class="form-select" aria-label="Default select example" name="editorial" required>
+                                <option selected disabled value="">Selecciona una editorial</option>
                                 <option th:each="editorial : ${editoriales}" th:text="${editorial.nombre}"
                                     th:value="${editorial.id}"></option>
                             </select>
-                            <br>
-                            <button type="submit" class="btn no-btn">Cargar datos</button>
+                            <div class="invalid-feedback">creo que se te olvido algo :(</div>
+                            <div class="modal-footer justify-content-center">
+                                <button type="submit" class="btn no-btn">Cargar datos</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -237,7 +257,26 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
+                <script>
+                    (function () {
+                        'use strict'
 
+
+                        var forms = document.querySelectorAll('.needs-validation')
+
+
+                        Array.prototype.slice.call(forms)
+                            .forEach(function (form) {
+                                form.addEventListener('submit', function (event) {
+                                    if (!form.checkValidity()) {
+                                        event.preventDefault()
+                                        event.stopPropagation()
+                                    }
+
+                                    form.classList.add('was-validated')
+                                }, false)
+                            })
+                    })()</script>
 </body>
 
 </html>
