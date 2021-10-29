@@ -99,7 +99,7 @@ public interface ValidacionInterface {
             if (isbn == null) {
                 throw new MiExcepcion("Valor sin declarar");
             } else if (!isbn.toString().matches("^(978)[0-9]{10}$")) {
-                throw new MiExcepcion("Valor sin declarar");
+                throw new MiExcepcion("ISBN invalido. El isbn debe comenzar con 978 y contener 13 digitos");
             }
         } catch (MiExcepcion es) {
             throw es;
