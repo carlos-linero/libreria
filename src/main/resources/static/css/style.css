@@ -2,12 +2,12 @@ html,
 body {
   height: 100%;
 }
-nav {
-  background-color: transparent;
-}
-.navbar a,
-.nav-link, li button .far {
+
+.navbar-light  .navbar-nav .nav-link, li button .far {
   color: pink;
+}
+.navbar-light .navbar-brand {
+    color: pink;
 }
 body {
   background-image: url(../img/bs.jpeg);
@@ -16,9 +16,7 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
 }
-.btn, button {
-  background-color: transparent;
-}
+
 th {
   text-transform: uppercase;
 }

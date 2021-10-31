@@ -16,7 +16,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-md menu">
+    <nav class="navbar navbar-expand-md navbar-light">
         <div class="container">
             <a class="navbar-brand" th:href="@{/inicio}">Egg-Book</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -37,13 +37,13 @@
                     <li th:if="${autores.isEmpty()} or ${editoriales.isEmpty()}" class="nav-item">
                         <button disabled title="Agregar Libro" type="button" class="btn" data-bs-toggle="modal"
                             data-bs-target="#agregarLibro">
-                            <i class="far fa-plus-square"></i>
+                            <span>Agregar</span>
                         </button>
                     </li>
                     <li th:unless="${autores.isEmpty()} or ${editoriales.isEmpty()}" class="nav-item">
                         <button title="Agregar Libro" type="button" class="btn" data-bs-toggle="modal"
                             data-bs-target="#agregarLibro">
-                            <i class="far fa-plus-square"></i>
+                            <span>Agregar</span>
                         </button>
                     </li>
                 </ul>
@@ -153,18 +153,19 @@
                                     placeholder="Ingrese ejemplares" th:value="${libro.ejemplares}"> <br>
                                 <input type="hidden" th:value="${libro.id}" name="id">
                                 <input type="hidden" th:value="${libro.estado}" name="estado">
-                                <!--<label>Autor</label> <br>
-                            <select class="form-select" aria-label="Default select example" name="autor">
-                                <option selected disabled value="">Selecciona un autor</option>
+
+                                <label>Autor</label> <br>
+                            <select class="form-select" aria-label="Default select example" name="autor" required>
+                                <option  selected  th:value="${libro.autor.id}" th:text="${libro.autor.nombre}"></option>
                                 <option th:each="autor : ${autores}" th:text="${autor.nombre}" th:value="${autor.id}"></option>
                             </select>
                             <label>Editorial</label> <br>
-                            <select class="form-select" aria-label="Default select example" name="editorial">
-                                <option selected disabled value="">Selecciona una editorial</option>
+                            <select class="form-select" aria-label="Default select example" name="editorial"  required>
+                                <option selected th:value="${libro.editorial.id}" th:text="${libro.editorial.nombre}"></option>
                                 <option th:each="editorial : ${editoriales}" th:text="${editorial.nombre}" th:value="${editorial.id}">
                                 </option>
                             </select>
-                            <br>-->
+                            <br>
                                 <div class="modal-footer justify-content-center">
                                     <button type="submit" class="btn no-btn">Cargar datos</button>
                                 </div>
@@ -254,6 +255,9 @@
             </div>
         </div>
     </div>
+
+    <footer class="fixed-bottom container-fluid text-center"><span>© Carlos Linero</span></footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>

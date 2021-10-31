@@ -71,7 +71,7 @@ public interface ValidacionInterface {
             } else if (anio.toString().length() < 4) {
                 throw new MiExcepcion("Año invalido");
             } else if (anio > anioActual.get(Calendar.YEAR)) {
-                throw new MiExcepcion("Paradoja temporal?");
+                throw new MiExcepcion("Marty McFly eres tu?");
             }
         } catch (MiExcepcion es) {
             throw es;

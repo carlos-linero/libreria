@@ -65,9 +65,11 @@ public class LibroControlador {
     }
 
     @PostMapping("/editar")
-    public RedirectView guardar(@RequestParam Long isbn, @RequestParam String nombre, @RequestParam Integer anio, @RequestParam Integer Ejemplares, @RequestParam String id, @RequestParam Boolean estado, RedirectAttributes attributes) throws Exception {
+    public RedirectView guardar(@RequestParam String editorial, @RequestParam String autor, @RequestParam Long isbn, @RequestParam String nombre, @RequestParam Integer anio, @RequestParam Integer Ejemplares, @RequestParam String id, @RequestParam Boolean estado, RedirectAttributes attributes) throws Exception {
         try {
-            libroServicio.guardarLibro(isbn, nombre, anio, Ejemplares, id, estado);
+            Editorial editorialAux = editorialServicio.obteneEditorial(editorial);
+            Autor autorAux = autorServicio.obtenerAutor(autor);
+            libroServicio.guardarLibro(editorialAux, autorAux, isbn, nombre, anio, Ejemplares, id, estado);
             attributes.addFlashAttribute("exito-name", "El Libro ha sido editado exitosamente");
         } catch (Exception e) {
             attributes.addFlashAttribute("error-name", e.getMessage());
