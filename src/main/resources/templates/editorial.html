@@ -80,9 +80,8 @@
                     <td th:text="${editorial.nombre}"></td>
 
                     <td th:if="${editorial.estado}">
-                        <button class="btn" title="Bibliografia" type="button">
-                            <i class="far fa-paper-plane"></i>
-                        </button>
+                <a title="Bibliografia" class="btn" th:href="@{/libro/bibliografia/__editorial__/__${editorial.id}__/__${editorial.nombre}__}"><i
+                        class="far fa-paper-plane"></i></a>
                     </td>
                     <td th:unless="${editorial.estado}">
                         <button disabled class="btn" title="Bibliografia" type="button">

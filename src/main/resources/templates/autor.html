@@ -82,9 +82,7 @@
                         <td th:text="${autor.nombre}"></td>
 
                         <td th:if="${autor.estado}">
-                            <button title="Bibliografia" type="button" class="btn">
-                                <i class="far fa-paper-plane"></i>
-                            </button>
+                            <a title="Bibliografia" class="btn" th:href="@{/libro/bibliografia/__autor__/__${autor.id}__/__${autor.nombre}__}"><i class="far fa-paper-plane"></i></a>
                         </td>
 
                         <td th:unless="${autor.estado}">

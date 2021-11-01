@@ -137,20 +137,31 @@
                     </div>
                     <div class="modal-body">
                         <div class="container-fluid">
-                            <form method="POST" enctype="multipart/form-data" th:action="@{libro/editar}">
+                            <form class="needs-validation" method="POST" enctype="multipart/form-data" th:action="@{libro/editar}" novalidate>
 
                                 <label>ISBN</label> <br>
                                 <input class="form-control" type="number" name="isbn" placeholder="Ingrese ISBN"
-                                    th:value="${libro.isbn}"> <br>
+                                    th:value="${libro.isbn}" aria-describedby="isbnAyuda" required> 
+                                    <div id="isbnAyuda" class="form-text">
+                                        El isbn debe comenzar con 978 y contener 13 digitos
+                                    </div>
+                                    <div class="invalid-feedback">creo que se te olvido algo :(</div>
+                                    <br>
                                 <label>Titulo</label> <br>
                                 <input class="form-control" type="text" name="nombre" placeholder="Ingrese titulo"
-                                    th:value="${libro.nombre}"> <br>
+                                    th:value="${libro.nombre}" required> 
+                                    <div class="invalid-feedback">creo que se te olvido algo :(</div>
+                                    <br>
                                 <label>Año</label> <br>
                                 <input class="form-control" type="text" name="anio" placeholder="Ingrese año"
-                                    th:value="${libro.anio}"> <br>
+                                    th:value="${libro.anio}" required> 
+                                    <div class="invalid-feedback">creo que se te olvido algo :(</div>
+                                    <br>
                                 <label>Ejemplares</label> <br>
                                 <input class="form-control" type="number" name="Ejemplares"
-                                    placeholder="Ingrese ejemplares" th:value="${libro.ejemplares}"> <br>
+                                    placeholder="Ingrese ejemplares" th:value="${libro.ejemplares}" required>
+                                    <div class="invalid-feedback">creo que se te olvido algo :(</div>
+                                     <br>
                                 <input type="hidden" th:value="${libro.id}" name="id">
                                 <input type="hidden" th:value="${libro.estado}" name="estado">
 

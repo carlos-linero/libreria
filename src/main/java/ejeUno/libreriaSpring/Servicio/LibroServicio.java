@@ -47,7 +47,7 @@ public class LibroServicio implements ValidacionInterface {
     }
 
     @Transactional
-    public void guardarLibro(Editorial editorial,Autor autor, Long isbn, String nombre, Integer anio, Integer ejemplares, String id, Boolean estado) throws Exception, MiExcepcion {
+    public void guardarLibro(Editorial editorial, Autor autor, Long isbn, String nombre, Integer anio, Integer ejemplares, String id, Boolean estado) throws Exception, MiExcepcion {
         try {
             validaPresencia(autor, "Autor");
             validaPresencia(editorial, "Editorial");
@@ -58,7 +58,7 @@ public class LibroServicio implements ValidacionInterface {
             validaCantidadEjemplar(ejemplares);
             Optional<Libro> respuesta = libroRepositorio.findById(id);
             validaPresencia(respuesta, "Libro");
-            
+
             Libro libro = libroRepositorio.findById(id).get();
             libro.setAutor(autor);
             libro.setEditorial(editorial);
@@ -66,7 +66,7 @@ public class LibroServicio implements ValidacionInterface {
             libro.setNombre(nombre);
             libro.setAnio(anio);
             libro.setEjemplares(ejemplares);
-       
+
             libroRepositorio.save(libro);
         } catch (MiExcepcion es) {
             throw es;
@@ -138,6 +138,22 @@ public class LibroServicio implements ValidacionInterface {
     public List<Libro> obtenerLibros() throws Exception {
         try {
             return libroRepositorio.findAll();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Libro> obtenerLibros(String id, String tipo) throws Exception {
+        try {
+            if (tipo.equalsIgnoreCase("autor")) {
+                return libroRepositorio.obtenerAutor(id);
+            } else if (tipo.equalsIgnoreCase("editorial")) {
+                return libroRepositorio.obtenerEditorial(id);
+            } else {
+                return null;
+            }
+
         } catch (Exception e) {
             throw e;
         }

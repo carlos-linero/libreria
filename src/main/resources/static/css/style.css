@@ -6,7 +6,7 @@ body {
 .navbar-light  .navbar-nav .nav-link, li button .far {
   color: pink;
 }
-.navbar-light .navbar-brand {
+.navbar-light .navbar-brand{
     color: pink;
 }
 body {
@@ -26,4 +26,9 @@ th {
 }
 .no-btn{
   border-color: #212529;
+}
+.cap{
+text-transform: uppercase;
+color: black;
+
 }

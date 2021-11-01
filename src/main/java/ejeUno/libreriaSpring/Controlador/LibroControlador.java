@@ -7,11 +7,13 @@ import ejeUno.libreriaSpring.Excepciones.MiExcepcion;
 import ejeUno.libreriaSpring.Servicio.AutorServicio;
 import ejeUno.libreriaSpring.Servicio.EditorialServicio;
 import ejeUno.libreriaSpring.Servicio.LibroServicio;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,9 +42,30 @@ public class LibroControlador {
                 mav.addObject("exito", flashMap.get("exito-name"));
                 mav.addObject("error", flashMap.get("error-name"));
             }
-            mav.addObject("libros", libroServicio.obtenerLibros());
+            List<Libro> libros = libroServicio.obtenerLibros();
+            libros.sort(Libro.compararNombre);
+            mav.addObject("libros", libros);
             mav.addObject("autores", autorServicio.obtenerAutores());
             mav.addObject("editoriales", editorialServicio.obtenerEditoriales());
+            return mav;
+        } catch (MiExcepcion es) {
+            throw es;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @GetMapping("/bibliografia/{tipo}/{id}/{name}")
+    public ModelAndView bibliografia(@PathVariable String tipo, @PathVariable String id, @PathVariable String name) throws MiExcepcion, Exception {
+
+        try {
+       
+            ModelAndView mav = new ModelAndView("bibliografia");
+            List<Libro> libros = libroServicio.obtenerLibros(id, tipo);
+            libros.sort(Libro.compararNombre);
+            mav.addObject("name", name);
+            mav.addObject("tipo", tipo);
+            mav.addObject("libros", libros);
             return mav;
         } catch (MiExcepcion es) {
             throw es;

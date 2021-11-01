@@ -1,6 +1,6 @@
-
 package ejeUno.libreriaSpring.Entidad;
 
+import java.util.Comparator;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,25 +11,26 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 public class Libro {
+
     @Id
-    @GeneratedValue(generator="uuid")
-    @GenericGenerator(name = "uuid", strategy =  "uuid2")
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
     private Long isbn;
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String nombre;
     private Integer anio;
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Integer ejemplares;
     private Integer ejemplaresPrestados;
     private Integer ejemplaresRestantes;
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Boolean estado;
     @ManyToOne
-    @JoinColumn(nullable=false)
+    @JoinColumn(nullable = false)
     private Autor autor;
     @ManyToOne
-    @JoinColumn(nullable=false)
+    @JoinColumn(nullable = false)
     private Editorial editorial;
 
     public Libro() {
@@ -127,4 +128,11 @@ public class Libro {
     public void setEditorial(Editorial editorial) {
         this.editorial = editorial;
     }
+
+    public static Comparator<Libro> compararNombre = new Comparator<Libro>() {
+        @Override
+        public int compare(Libro a1, Libro a2) {
+            return a1.getNombre().compareToIgnoreCase(a2.getNombre());
+        }
+    };
 }
