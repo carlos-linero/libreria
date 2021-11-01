@@ -10,9 +10,9 @@ import org.springframework.data.repository.query.Param;
 @Repository
 public interface LibroRepositorio extends JpaRepository<Libro, String> {
 
-    @Query("SELECT l FROM Libro l WHERE l.autor.id = :id")
+    @Query("SELECT l FROM Libro l WHERE l.autor.id = :id and l.estado = true")
     public List<Libro> obtenerAutor(@Param("id") String id);
 
-    @Query("SELECT l FROM Libro l WHERE l.editorial.id = :id")
+    @Query("SELECT l FROM Libro l WHERE l.editorial.id = :id and l.estado = true")
     public List<Libro> obtenerEditorial(@Param("id") String id);
 }
