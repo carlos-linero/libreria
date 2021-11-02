@@ -94,12 +94,14 @@ public interface ValidacionInterface {
         }
     }
 
-    default void validaIsbn(Long isbn) throws MiExcepcion {
+    default void validaIsbn(Long isbn, Long cant) throws MiExcepcion {
         try {
             if (isbn == null) {
                 throw new MiExcepcion("Valor sin declarar");
             } else if (!isbn.toString().matches("^(978)[0-9]{10}$")) {
                 throw new MiExcepcion("ISBN invalido. El isbn debe comenzar con 978 y contener 13 digitos");
+            }else if (cant > 0) {
+                throw new MiExcepcion("ISBN invalido. existe un libro activo con el mismo ISBN: "+isbn);
             }
         } catch (MiExcepcion es) {
             throw es;

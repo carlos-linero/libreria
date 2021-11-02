@@ -21,7 +21,7 @@ public class LibroServicio implements ValidacionInterface {
     @Transactional
     public void guardarLibro(Long isbn, String nombre, Integer anio, Integer ejemplares, Autor autor, Editorial editorial) throws Exception, MiExcepcion {
         try {
-
+            validaIsbn(isbn, libroRepositorio.obtenerLibroxIsbn(isbn));
             validacionNombre(nombre);
             validacionAnio(anio);
             validaCantidadEjemplar(ejemplares);
@@ -51,7 +51,6 @@ public class LibroServicio implements ValidacionInterface {
         try {
             validaPresencia(autor, "Autor");
             validaPresencia(editorial, "Editorial");
-            validaIsbn(isbn);
             validaEstado(estado);
             validacionNombre(nombre);
             validacionAnio(anio);
@@ -60,6 +59,9 @@ public class LibroServicio implements ValidacionInterface {
             validaPresencia(respuesta, "Libro");
 
             Libro libro = libroRepositorio.findById(id).get();
+            if (!libro.getIsbn().equals(isbn)) {
+                validaIsbn(isbn, libroRepositorio.obtenerLibroxIsbn(isbn));
+            }
             libro.setAutor(autor);
             libro.setEditorial(editorial);
             libro.setIsbn(isbn);
@@ -81,12 +83,16 @@ public class LibroServicio implements ValidacionInterface {
             Optional<Libro> respuesta = libroRepositorio.findById(id);
             validaPresencia(respuesta, "Libro");
 
-            Libro editorial = libroRepositorio.findById(id).get();
+            Libro libro = libroRepositorio.findById(id).get();
+            if (libro.getEstado() == false ) {
+                validaIsbn(libro.getIsbn(), libroRepositorio.obtenerLibroxIsbn(libro.getIsbn()));
+            }
+            
             estado = (estado) ? false : true;
+            
+            libro.setEstado(estado);
 
-            editorial.setEstado(estado);
-
-            libroRepositorio.save(editorial);
+            libroRepositorio.save(libro);
         } catch (MiExcepcion es) {
             throw es;
         } catch (Exception e) {

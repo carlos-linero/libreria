@@ -153,7 +153,7 @@
                                     <div class="invalid-feedback">creo que se te olvido algo :(</div>
                                     <br>
                                 <label>Año</label> <br>
-                                <input class="form-control" type="text" name="anio" placeholder="Ingrese año"
+                                <input class="form-control" type="number" name="anio" placeholder="Ingrese año"
                                     th:value="${libro.anio}" required> 
                                     <div class="invalid-feedback">creo que se te olvido algo :(</div>
                                     <br>
@@ -225,18 +225,18 @@
                         <form class="needs-validation" method="POST" enctype="multipart/form-data" th:action="@{libro/guardar}" novalidate>
 
                             <label>ISBN</label> <br>
-                            <input class="form-control" type="number" name="isbn" placeholder="Ingrese ISBN" aria-describedby="isbnAyuda" required>
+                            <input class="form-control" type="number" name="isbn" placeholder="Ingrese ISBN" aria-describedby="isbnAyuda" pattern="^(978)[0-9]{10}$" required>
                             <div id="isbnAyuda" class="form-text">
                                El isbn debe comenzar con 978 y contener 13 digitos
                             </div>
                             <div class="invalid-feedback">creo que se te olvido algo :(</div>
                             <br>
                             <label>Titulo</label> <br>
-                            <input class="form-control" type="text" name="nombre" placeholder="Ingrese titulo" required>
+                            <input class="form-control" type="text" name="nombre" placeholder="Ingrese titulo" minlength="4" required>
                             <div class="invalid-feedback">creo que se te olvido algo :(</div>
                             <br>
                             <label>Año</label> <br>
-                            <input class="form-control" type="text" name="anio" placeholder="Ingrese año" required>
+                            <input class="form-control" type="number" name="anio" placeholder="Ingrese año" required>
                             <div class="invalid-feedback">creo que se te olvido algo :(</div>
                             <br>
                             <label>Ejemplares</label> <br>
