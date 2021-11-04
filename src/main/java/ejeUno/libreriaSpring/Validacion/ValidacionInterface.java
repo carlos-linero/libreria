@@ -100,8 +100,8 @@ public interface ValidacionInterface {
                 throw new MiExcepcion("Valor sin declarar");
             } else if (!isbn.toString().matches("^(978)[0-9]{10}$")) {
                 throw new MiExcepcion("ISBN invalido. El isbn debe comenzar con 978 y contener 13 digitos");
-            }else if (cant > 0) {
-                throw new MiExcepcion("ISBN invalido. existe un libro activo con el mismo ISBN: "+isbn);
+            } else if (cant > 0) {
+                throw new MiExcepcion("ISBN invalido. existe un libro activo con el mismo ISBN: " + isbn);
             }
         } catch (MiExcepcion es) {
             throw es;
@@ -113,7 +113,7 @@ public interface ValidacionInterface {
     default void validaEstado(Boolean estado) throws MiExcepcion {
         try {
             if (estado == false) {
-                throw new MiExcepcion("No se puede modificar al estar deshabilitado");
+                throw new MiExcepcion("No se encuentra habilitado");
             }
         } catch (MiExcepcion es) {
             throw es;
@@ -128,11 +128,41 @@ public interface ValidacionInterface {
                 throw new MiExcepcion("Valor de cantidad de prestamo sin declarar");
             } else if (cantActual == null) {
                 throw new MiExcepcion("Valor de cantidad actual sin declarar");
-            }else if (cantTransaccion > cantTotal) {
+            } else if (cantTransaccion > cantTotal) {
                 throw new MiExcepcion("Cantidad del prestamo supera a la cantidad total");
             } else if (cantTransaccion > cantActual) {
                 throw new MiExcepcion("Cantidad del prestamo supera a la cantidad actual");
             }
+        } catch (MiExcepcion es) {
+            throw es;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    default void validaDocumento(Long documento) throws MiExcepcion {
+        try {
+            if (documento == null) {
+                throw new MiExcepcion("Documento no fue cargado");
+            } else if (documento < 0) {
+                throw new MiExcepcion("Documento invalido, no puede ser un numero negativo");
+            } else if (Long.toString(documento).matches("^[0-9]{7,9}$")) {
+                throw new MiExcepcion("Documento invalido");
+            }
+        } catch (MiExcepcion es) {
+            throw es;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    default void validaTelefono(String telefono) throws MiExcepcion {
+        try {
+            if (telefono == null) {
+                throw new MiExcepcion("Telefono no fue cargado");
+            } else if (telefono.length()<7) {
+                throw new MiExcepcion("Telefono invalido, no puede tener menos de 7 digitos");
+            } 
         } catch (MiExcepcion es) {
             throw es;
         } catch (Exception e) {

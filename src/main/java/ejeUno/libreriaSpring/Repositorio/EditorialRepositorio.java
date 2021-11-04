@@ -1,6 +1,5 @@
 package ejeUno.libreriaSpring.Repositorio;
 
-import ejeUno.libreriaSpring.Entidad.Autor;
 import ejeUno.libreriaSpring.Entidad.Editorial;
 import java.util.List;
 import org.springframework.stereotype.Repository;

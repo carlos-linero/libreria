@@ -20,7 +20,7 @@ public class EditorialServicio implements ValidacionInterface {
     public void crearEditorial(String nombre) throws Exception, MiExcepcion {
         try {
             Editorial editorial = new Editorial();
-            validacionNombrePersona(nombre);
+            validacionNombre(nombre);
 
             editorial.setNombre(nombre);
             editorial.setEstado(true);

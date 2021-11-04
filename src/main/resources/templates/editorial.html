@@ -16,33 +16,37 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-md navbar-light">
+    <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
             <a class="navbar-brand" th:href="@{/inicio}">Egg-Book</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav text-end">
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/libro}">Libro</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/autor}">Autor</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" th:href="@{/editorial}">Editorial</a>
-                    </li>
-                    <li class="nav-item">
-                        <button title="Agregar Editorial" type="button" class="btn" data-bs-toggle="modal"
-                            data-bs-target="#agregarEditorial">
-                            <span>Agregar</span>
-                        </button>
-                    </li>
-                </ul>
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+                aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/libro}">Libro</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/autor}">Autor</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" th:href="@{/editorial}">Editorial</a>
+                        </li>
+                        <li class="nav-item">
+                            <a title="Agregar Editorial" data-bs-toggle="modal" class="btn" data-bs-target="#agregarEditorial">Agregar Editorial</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
     </nav>
     <div th:if="${editoriales.isEmpty()}" class="text-center">
         <h5>No hay ninguna Editorial registrada</h5>
@@ -53,12 +57,14 @@
     </div>
     <div class=" container-fluid">
         <div class="row justify-content-center">
-            <div class="alert alert-secondary alert-dismissible fade show col-5 text-center" role="alert" th:if="${exito != null}">
+            <div class="alert alert-secondary alert-dismissible fade show col-5 text-center" role="alert"
+                th:if="${exito != null}">
                 <strong th:text="${exito}"></strong>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 
-            <div class="alert alert-warning alert-dismissible fade show col-5 text-center" role="alert" th:if="${error != null}">
+            <div class="alert alert-warning alert-dismissible fade show col-5 text-center" role="alert"
+                th:if="${error != null}">
                 <strong th:text="${error}"></strong>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
@@ -66,57 +72,58 @@
     </div>
     <main th:unless="${editoriales.isEmpty()}" class="container-fluid">
         <div class="table-responsive">
-        <table class="table table-hover text-center table-sm table-borderless">
-            <thead>
-                <tr>
-                    <th scope="col">Editorial</th>
-                    <th scope="col">Bibliografia</th>
-                    <th scope="col">Editar</th>
-                    <th scope="col">Des/Habilitar</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="editorial : ${editoriales}">
-                    <td th:text="${editorial.nombre}"></td>
+            <table class="table table-hover text-center table-sm table-borderless">
+                <thead>
+                    <tr>
+                        <th scope="col">Editorial</th>
+                        <th scope="col">Bibliografia</th>
+                        <th scope="col">Editar</th>
+                        <th scope="col">Des/Habilitar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="editorial : ${editoriales}">
+                        <td th:text="${editorial.nombre}"></td>
 
-                    <td th:if="${editorial.estado}">
-                <a title="Bibliografia" class="btn" th:href="@{/libro/bibliografia/__editorial__/__${editorial.id}__/__${editorial.nombre}__}"><i
-                        class="far fa-paper-plane"></i></a>
-                    </td>
-                    <td th:unless="${editorial.estado}">
-                        <button disabled class="btn" title="Bibliografia" type="button">
-                            <i class="far fa-paper-plane"></i>
-                        </button>
-                    </td>
+                        <td th:if="${editorial.estado}">
+                            <a title="Bibliografia" class="btn"
+                                th:href="@{/libro/bibliografia/__editorial__/__${editorial.id}__/__${editorial.nombre}__}"><i
+                                    class="far fa-paper-plane"></i></a>
+                        </td>
+                        <td th:unless="${editorial.estado}">
+                            <button disabled class="btn" title="Bibliografia" type="button">
+                                <i class="far fa-paper-plane"></i>
+                            </button>
+                        </td>
 
-                    <td th:if="${editorial.estado}">
-                        <button class="btn" title="Editar" type="button" data-bs-toggle="modal"
-                            th:attr="data-bs-target=|#modificar${editorial.id}|">
-                            <i class="far fa-edit"></i>
-                        </button>
-                    </td>
-                    <td th:unless="${editorial.estado}">
-                        <button disabled class="btn" title="Editar" type="button" data-bs-toggle="modal"
-                            th:attr="data-bs-target=|#modificar${editorial.id}|">
-                            <i class="far fa-edit"></i>
-                        </button>
-                    </td>
+                        <td th:if="${editorial.estado}">
+                            <button class="btn" title="Editar" type="button" data-bs-toggle="modal"
+                                th:attr="data-bs-target=|#modificar${editorial.id}|">
+                                <i class="far fa-edit"></i>
+                            </button>
+                        </td>
+                        <td th:unless="${editorial.estado}">
+                            <button disabled class="btn" title="Editar" type="button" data-bs-toggle="modal"
+                                th:attr="data-bs-target=|#modificar${editorial.id}|">
+                                <i class="far fa-edit"></i>
+                            </button>
+                        </td>
 
-                    <td th:if="${editorial.estado}">
-                        <button class="btn" title="Deshabilitar" type="button" data-bs-toggle="modal"
-                            th:attr="data-bs-target=|#habilitarDeshabilitar${editorial.id}|">
-                            <i class="far fa-minus-square"></i>
-                        </button>
-                    </td>
-                    <td th:unless="${editorial.estado}">
-                        <button class="btn" title="Habilitar" type="button" data-bs-toggle="modal"
-                            th:attr="data-bs-target=|#habilitarDeshabilitar${editorial.id}|">
-                            <i class="far fa-plus-square"></i>
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                        <td th:if="${editorial.estado}">
+                            <button class="btn" title="Deshabilitar" type="button" data-bs-toggle="modal"
+                                th:attr="data-bs-target=|#habilitarDeshabilitar${editorial.id}|">
+                                <i class="far fa-minus-square"></i>
+                            </button>
+                        </td>
+                        <td th:unless="${editorial.estado}">
+                            <button class="btn" title="Habilitar" type="button" data-bs-toggle="modal"
+                                th:attr="data-bs-target=|#habilitarDeshabilitar${editorial.id}|">
+                                <i class="far fa-plus-square"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </main>
     <!-- Editar editorial -->
@@ -133,15 +140,15 @@
                             <form autocomplete="off" th:action="@{editorial/modificar-nombre}" method="POST"
                                 class="needs-validation" novalidate>
                                 <label th:attr="for=${editorial.id}">Nombre del la Editorial</label>
-                                <input class="form-control" th:attr="placeholder=${editorial.nombre}" type="text" name="nombre"
-                                    placeholder="Nombre" required>
+                                <input class="form-control" th:attr="placeholder=${editorial.nombre}" type="text"
+                                    name="nombre" placeholder="Nombre" required>
                                 <input type="hidden" th:value="${editorial.estado}" name="estado">
                                 <input type="hidden" th:value="${editorial.id}" name="id">
                                 <div class="invalid-feedback">creo que se te olvido algo :(</div>
-                                <div class="modal-footer justify-content-center"> 
-                                <button title="Guardar Cambios" type="submit" value="Submit" class="btn no-btn">
-                                    Guardar Cambios
-                                </button>
+                                <div class="modal-footer justify-content-center">
+                                    <button title="Guardar Cambios" type="submit" value="Submit" class="btn no-btn">
+                                        Guardar Cambios
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -165,7 +172,8 @@
                                 <input type="hidden" th:attr="value=${editorial.estado}" name="estado">
                                 <input type="hidden" th:attr="value=${editorial.id}" name="id">
                                 <div class="modal-footer justify-content-center">
-                                <button title="Confirmar" type="submit" value="Submit" class="btn no-btn">Si</button>
+                                    <button title="Confirmar" type="submit" value="Submit"
+                                        class="btn no-btn">Si</button>
                                 </div>
                             </form>
                         </div>
@@ -190,41 +198,41 @@
                                 name="nombre">
                             <div class="invalid-feedback">creo que se te olvido algo :(</div>
                             <div class="modal-footer justify-content-center">
-                            <button title="Guardar Autor" type="submit" value="Submit" class="btn no-btn">
-                                Agregar Editorial
-                            </button>
+                                <button title="Guardar Autor" type="submit" value="Submit" class="btn no-btn">
+                                    Agregar Editorial
+                                </button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-         
+
         <footer class="fixed-bottom container-fluid text-center"><span>© Carlos Linero</span></footer>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
             crossorigin="anonymous"></script>
-            <script>
-                (function () {
-                    'use strict'
+        <script>
+            (function () {
+                'use strict'
 
 
-                    var forms = document.querySelectorAll('.needs-validation')
+                var forms = document.querySelectorAll('.needs-validation')
 
 
-                    Array.prototype.slice.call(forms)
-                        .forEach(function (form) {
-                            form.addEventListener('submit', function (event) {
-                                if (!form.checkValidity()) {
-                                    event.preventDefault()
-                                    event.stopPropagation()
-                                }
+                Array.prototype.slice.call(forms)
+                    .forEach(function (form) {
+                        form.addEventListener('submit', function (event) {
+                            if (!form.checkValidity()) {
+                                event.preventDefault()
+                                event.stopPropagation()
+                            }
 
-                                form.classList.add('was-validated')
-                            }, false)
-                        })
-                })()</script>
+                            form.classList.add('was-validated')
+                        }, false)
+                    })
+            })()</script>
 
 </body>
 
