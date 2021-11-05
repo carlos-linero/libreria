@@ -39,6 +39,7 @@ public class AutorServicio implements ValidacionInterface {
             Optional<Autor> respuesta = autorRepositorio.findById(id);
 
             validaPresencia(respuesta, "Autor");
+            validaPresencia(estado, "'Alta'");
 
             Autor autor = autorRepositorio.findById(id).get();
             estado = (estado) ? false : true;
@@ -61,9 +62,7 @@ public class AutorServicio implements ValidacionInterface {
 
             validacionNombrePersona(nombre);
             validaPresencia(respuesta, "Autor");
-            if (estado == false || estado == null) {
-                throw new MiExcepcion("No se puede modificar, Usuario no se encuentra habilitado");
-            }
+
             Autor autor = autorRepositorio.findById(id).get();
             autor.setNombre(nombre);
 
@@ -76,22 +75,22 @@ public class AutorServicio implements ValidacionInterface {
     }
 
     @Transactional(readOnly = true)
-    public List<Autor> obtenerAutores() throws Exception {
+    public Autor obtenerAutor(String id) throws Exception {
         try {
             //return autorRepositorio.obtenerAutores(true);
-            return autorRepositorio.findAll();
+            Optional<Autor> respuesta = autorRepositorio.findById(id);
+            validaPresencia(respuesta, "Autor");
+            return autorRepositorio.findById(id).get();
         } catch (Exception e) {
             throw e;
         }
     }
 
     @Transactional(readOnly = true)
-    public Autor obtenerAutor(String id) throws Exception {
+    public List<Autor> obtenerAutor() throws Exception {
         try {
             //return autorRepositorio.obtenerAutores(true);
-             Optional<Autor> respuesta = autorRepositorio.findById(id);
-             validaPresencia(respuesta, "Autor");
-            return autorRepositorio.findById(id).get();
+            return autorRepositorio.findAll();
         } catch (Exception e) {
             throw e;
         }

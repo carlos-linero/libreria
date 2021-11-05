@@ -46,18 +46,19 @@
                         </li>
                         <li class="nav-item">
 
-                            <a title="Agregar Autor" data-bs-toggle="modal" class="btn"
-                                data-bs-target="#agregarAutor">Agregar Autor</a>
+                            <a title="Agregar Cliente" data-bs-toggle="modal" class="btn"
+                                data-bs-target="#agregarCliente">Agregar Cliente</a>
 
                         </li>
                     </ul>
                 </div>
             </div>
     </nav>
-    <div th:if="${autores.isEmpty()}" class="text-center">
-        <h5>No hay ningun Autor registrado</h5>
-        <button title="Agregar Autor" type="button" class="btn" data-bs-toggle="modal" data-bs-target="#agregarAutor">
-            Agregar Autor
+    <div th:if="${clientes.isEmpty()}" class="text-center">
+        <h5>No hay ningun Cliente registrado</h5>
+        <button title="Agregar Cliente" type="button" class="btn" data-bs-toggle="modal"
+            data-bs-target="#agregarCliente">
+            Agregar Cliente
         </button>
     </div>
     <div class=" container-fluid">
@@ -76,54 +77,54 @@
         </div>
     </div>
 
-    <main th:unless="${autores.isEmpty()}" class="container-fluid">
+    <main th:unless="${clientes.isEmpty()}" class="container-fluid">
         <div class="table-responsive">
             <table class="table table-hover text-center table-sm table-borderless">
                 <thead>
                     <tr>
                         <th scope="col">Nombre</th>
-                        <th scope="col">Bibliografia</th>
+                        <th scope="col">Prestamos</th>
                         <th scope="col">Editar</th>
                         <th scope="col">Des/Habilitar</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="autor : ${autores}">
-                        <td th:text="${autor.nombre}"></td>
+                    <tr th:each="cliente : ${clientes}">
+                        <td th:text="${cliente.nombre}"></td>
 
-                        <td th:if="${autor.estado}">
-                            <a title="Bibliografia" class="btn"
-                                th:href="@{/libro/bibliografia/__autor__/__${autor.id}__/__${autor.nombre}__}"><i
+                        <td th:if="${cliente.estado}">
+                            <a title="Prestamos" class="btn">
+                                 <i
                                     class="far fa-paper-plane"></i></a>
                         </td>
 
-                        <td th:unless="${autor.estado}">
-                            <button disabled title="Bibliografia" type="button" class="btn">
+                        <td th:unless="${cliente.estado}">
+                            <button disabled title="Prestamos" type="button" class="btn">
                                 <i class="far fa-paper-plane"></i>
                             </button>
                         </td>
 
-                        <td th:if="${autor.estado}">
+                        <td th:if="${cliente.estado}">
                             <button class="btn" title="Editar" type="button" data-bs-toggle="modal"
-                                th:attr="data-bs-target=|#modificar${autor.id}|">
+                                th:attr="data-bs-target=|#modificar${cliente.id}|">
                                 <i class="far fa-edit"></i>
                             </button>
                         </td>
 
-                        <td th:unless="${autor.estado}">
+                        <td th:unless="${cliente.estado}">
                             <button disabled class="btn" title="Editar" type="button">
                                 <i class="far fa-edit"></i>
                             </button>
                         </td>
 
-                        <td th:if="${autor.estado}"><button class="btn" title="Deshabilitar" type="button"
-                                data-bs-toggle="modal" th:attr="data-bs-target=|#habilitarDeshabilitar${autor.id}|">
+                        <td th:if="${cliente.estado}"><button class="btn" title="Deshabilitar" type="button"
+                                data-bs-toggle="modal" th:attr="data-bs-target=|#habilitarDeshabilitar${cliente.id}|">
                                 <i class="far fa-minus-square"></i>
                             </button>
                         </td>
-                        <td th:unless="${autor.estado}">
+                        <td th:unless="${cliente.estado}">
                             <button class="btn" title="Habilitar" type="button" data-bs-toggle="modal"
-                                th:attr="data-bs-target=|#habilitarDeshabilitar${autor.id}|">
+                                th:attr="data-bs-target=|#habilitarDeshabilitar${cliente.id}|">
                                 <i class="far fa-plus-square"></i>
                             </button>
                         </td>
@@ -133,55 +134,69 @@
             </table>
         </div>
     </main>
-    <!-- Editar Autor -->
-    <div th:each="autor : ${autores}">
-        <div class="modal fade" th:attr="id=|modificar${autor.id}|" tabindex="-1" aria-hidden="true">
+    <!-- editar Cliente -->
+    <div th:each="cliente : ${clientes}">
+        <div class="modal fade" th:attr="id=|modificar${cliente.id}|" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Modificar Autor</h5>
+                        <h5 class="modal-title">Modificar Cliente</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form autocomplete="off" th:action="@{autor/modificar-nombre}" method="POST"
-                            class="needs-validation" novalidate>
-                            <label th:attr="for=${autor.id}">Nombre del Autor</label>
+                        <div class="container-fluid">
+                            <form class="needs-validation" method="POST" enctype="multipart/form-data"
+                                th:action="@{cliente/modificar}" novalidate>
 
-                            <input class="form-control" th:value="${autor.nombre}" type="text" name="nombre"
-                                placeholder="Nombre" required>
-                            <div class="invalid-feedback">creo que se te olvido algo :(</div>
-                            <input type="hidden" th:value="${autor.estado}" name="estado">
-                            <input type="hidden" th:value="${autor.id}" name="id">
+                                <label class="col-12">Nombre</label>
+                                <input class="form-control col-12" type="text" name="nombre" placeholder="Nombre"
+                                    th:value="${cliente.nombre}" required>
+                                <div class="invalid-feedback col-12">creo que se te olvido algo :(</div>
 
-                            <hr class="my-4">
-                            <div class="modal-dialog-centered justify-content-center">
-                                <button title="Guardar Cambios" type="submit" value="Submit" class="btn no-btn">
-                                    Guardar Cambios
-                                </button>
-                            </div>
-                        </form>
+
+                                <label class="col-12">Apellido</label>
+                                <input class="form-control col-12" type="text" name="apellido" placeholder="Apellido"
+                                    th:value="${cliente.apellido}" required>
+                                <div class="invalid-feedback col-12">creo que se te olvido algo :(</div>
+
+
+                                <label class="col-12">Documento</label>
+                                <input class="form-control col-12" type="number" name="documento"
+                                    placeholder="Documento" th:value="${cliente.documento}" required>
+                                <div class="invalid-feedback col-12">creo que se te olvido algo :(</div>
+
+                                <label class="col-12">Telefono</label>
+                                <input class="form-control col-12" type="tel" name="telefono" placeholder="Telefono"
+                                    th:value="${cliente.telefono}" required>
+                                <div class="invalid-feedback col-12">creo que se te olvido algo :(</div>
+                                <br>
+                                <input type="hidden" th:value="${cliente.id}" name="id">
+                                <input type="hidden" th:value="${cliente.estado}" name="estado">
+                                <div class="modal-footer justify-content-center">
+                                    <button type="submit" class="btn no-btn">Cargar datos</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- habilitar/deshabilitar Autor -->
-        <div class="modal fade" th:attr="id=|habilitarDeshabilitar${autor.id}|" tabindex="-1" aria-hidden="true">
+        <!-- habilitar/deshabilitar Cliente -->
+        <div class="modal fade" th:attr="id=|habilitarDeshabilitar${cliente.id}|" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" th:text="${autor.estado} ? 'Deshabilitar Autor':'Habilitar Autor'"></h5>
+                        <h5 class="modal-title"
+                            th:text="${cliente.estado} ? 'Deshabilitar Cliente':'Habilitar Cliente'"></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form autocomplete="off" th:action="@{autor/modificar-estado}" method="POST">
-                            <div><span th:text="|Confirmas el cambio de estado del autor : ${autor.nombre}|"></span>
+                        <form autocomplete="off" th:action="@{cliente/modificar-estado}" method="POST">
+                            <div><span th:text="|Confirmas el cambio de estado del cliente : ${cliente.nombre}|"></span>
                             </div>
-                            <input type="hidden" th:attr="value=${autor.estado}" name="estado">
-                            <input type="hidden" th:attr="value=${autor.id}" name="id">
-                            
-
-                            <hr class="my-4">
-                            <div class="modal-dialog-centered justify-content-center">
+                            <input type="hidden" th:attr="value=${cliente.estado}" name="estado">
+                            <input type="hidden" th:attr="value=${cliente.id}" name="id">
+                            <div class="modal-footer justify-content-center">
                                 <button title="Confirmar" type="submit" value="Submit" class="btn no-btn">si</button>
                             </div>
                         </form>
@@ -190,28 +205,47 @@
             </div>
         </div>
     </div>
-    <!-- agregar autor -->
-    <div class="modal fade" id="agregarAutor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- agregar cliente -->
+    <div class="modal fade" id="agregarCliente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Agregar Autor</h5>
+                    <h5 class="modal-title">Agregar Cliente</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form autocomplete="off" th:action="@{autor/guardar}" method="POST" class="needs-validation"
-                        novalidate>
-                        <label for="nombre">Nombre del Autor</label>
-                        <input class="form-control" id="nombre" placeholder="Nombre" required type="text" name="nombre">
-                        <div class="invalid-feedback">creo que se te olvido algo :(</div>
-                        
-                        <hr class="my-4">
-                        <div class="modal-dialog-centered justify-content-center">
-                            <button title="Guardar Autor" type="submit" value="Submit" class="btn no-btn">
-                                Agregar Autor
-                            </button>
-                        </div>
-                    </form>
+                    <div class="container-fluid">
+                        <form class="needs-validation" method="POST" enctype="multipart/form-data"
+                            th:action="@{cliente/guardar}" novalidate>
+
+                            <label class="col-12">Nombre</label>
+                            <input class="form-control col-12" type="text" name="nombre" placeholder="Nombre" required>
+                            <div class="invalid-feedback col-12">creo que se te olvido algo :(</div>
+
+
+                            <label class="col-12">Apellido</label>
+                            <input class="form-control col-12" type="text" name="apellido" placeholder="Apellido"
+                                required>
+                            <div class="invalid-feedback col-12">creo que se te olvido algo :(</div>
+
+
+                            <label class="col-12">Documento</label>
+                            <input class="form-control col-12" type="number" name="documento" placeholder="Documento"  aria-describedby="documentoAyuda" required>
+                            <div id="documentoAyuda" class="form-text">
+                                El documento debe tener entre 7 y 9 digitos
+                            </div>
+                            <div class="invalid-feedback col-12">creo que se te olvido algo :(</div>
+
+                            <label class="col-12">Telefono</label>
+                            <input class="form-control col-12" type="tel" name="telefono" placeholder="Telefono"
+                                required>
+                            <div class="invalid-feedback col-12">creo que se te olvido algo :(</div>
+                            <br>
+                            <div class="modal-footer justify-content-center">
+                                <button title="Guardar cliente" type="submit" value="Submit" class="btn no-btn">Cargar datos</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

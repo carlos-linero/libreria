@@ -38,6 +38,7 @@ public class EditorialServicio implements ValidacionInterface {
         try {
             Optional<Editorial> respuesta = editorialRepositorio.findById(id);
             validaPresencia(respuesta, "Editorial");
+            validaPresencia(estado, "'Alta'");
 
             Editorial editorial = editorialRepositorio.findById(id).get();
             estado = (estado) ? false : true;
@@ -73,22 +74,22 @@ public class EditorialServicio implements ValidacionInterface {
     }
 
     @Transactional(readOnly = true)
-    public List<Editorial> obtenerEditoriales() throws Exception {
+    public Editorial obtenerEditorial(String id) throws Exception {
         try {
-            //return editorialRepositorio.obtenerEditoriales(true);
-            return editorialRepositorio.findAll();
+            //return autorRepositorio.obtenerAutores(true);
+            Optional<Editorial> respuesta = editorialRepositorio.findById(id);
+            validaPresencia(respuesta, "Editorial");
+            return editorialRepositorio.findById(id).get();
         } catch (Exception e) {
             throw e;
         }
     }
 
     @Transactional(readOnly = true)
-    public Editorial obteneEditorial(String id) throws Exception {
+    public List<Editorial> obtenerEditorial() throws Exception {
         try {
-            //return autorRepositorio.obtenerAutores(true);
-             Optional<Editorial> respuesta = editorialRepositorio.findById(id);
-            validaPresencia(respuesta, "Editorial");
-            return editorialRepositorio.findById(id).get();
+            //return editorialRepositorio.obtenerEditoriales(true);
+            return editorialRepositorio.findAll();
         } catch (Exception e) {
             throw e;
         }

@@ -33,6 +33,9 @@
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                         <li class="nav-item">
+                            <a class="nav-link" th:href="@{/cliente}">Cliente</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" th:href="@{/libro}">Libro</a>
                         </li>
                         <li class="nav-item">
@@ -42,7 +45,8 @@
                             <a class="nav-link" aria-current="page" th:href="@{/editorial}">Editorial</a>
                         </li>
                         <li class="nav-item">
-                            <a title="Agregar Editorial" data-bs-toggle="modal" class="btn" data-bs-target="#agregarEditorial">Agregar Editorial</a>
+                            <a title="Agregar Editorial" data-bs-toggle="modal" class="btn"
+                                data-bs-target="#agregarEditorial">Agregar Editorial</a>
                         </li>
                     </ul>
                 </div>
@@ -103,8 +107,7 @@
                             </button>
                         </td>
                         <td th:unless="${editorial.estado}">
-                            <button disabled class="btn" title="Editar" type="button" data-bs-toggle="modal"
-                                th:attr="data-bs-target=|#modificar${editorial.id}|">
+                            <button disabled class="btn" title="Editar" type="button">
                                 <i class="far fa-edit"></i>
                             </button>
                         </td>
@@ -140,12 +143,14 @@
                             <form autocomplete="off" th:action="@{editorial/modificar-nombre}" method="POST"
                                 class="needs-validation" novalidate>
                                 <label th:attr="for=${editorial.id}">Nombre del la Editorial</label>
-                                <input class="form-control" th:attr="placeholder=${editorial.nombre}" type="text"
+                                <input class="form-control" th:value="${editorial.nombre}" type="text"
                                     name="nombre" placeholder="Nombre" required>
                                 <input type="hidden" th:value="${editorial.estado}" name="estado">
                                 <input type="hidden" th:value="${editorial.id}" name="id">
                                 <div class="invalid-feedback">creo que se te olvido algo :(</div>
-                                <div class="modal-footer justify-content-center">
+                                
+                                <hr class="my-4">
+                                <div class="modal-dialog-centered justify-content-center">
                                     <button title="Guardar Cambios" type="submit" value="Submit" class="btn no-btn">
                                         Guardar Cambios
                                     </button>
@@ -161,7 +166,8 @@
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">Deshabilitar Editorial</h5>
+                            <h5 class="modal-title"
+                                th:text="${editorial.estado} ? 'Deshabilitar Editorial':'Habilitar Editorial'"></h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -171,7 +177,9 @@
                                 </div>
                                 <input type="hidden" th:attr="value=${editorial.estado}" name="estado">
                                 <input type="hidden" th:attr="value=${editorial.id}" name="id">
-                                <div class="modal-footer justify-content-center">
+
+                            <hr class="my-4">
+                            <div class="modal-dialog-centered justify-content-center">
                                     <button title="Confirmar" type="submit" value="Submit"
                                         class="btn no-btn">Si</button>
                                 </div>
@@ -197,8 +205,10 @@
                             <input class="form-control" id="nombre" placeholder="Nombre" required type="text"
                                 name="nombre">
                             <div class="invalid-feedback">creo que se te olvido algo :(</div>
-                            <div class="modal-footer justify-content-center">
-                                <button title="Guardar Autor" type="submit" value="Submit" class="btn no-btn">
+                            
+                            <hr class="my-4">
+                            <div class="modal-dialog-centered justify-content-center">
+                                <button title="Guardar Editorial" type="submit" value="Submit" class="btn no-btn">
                                     Agregar Editorial
                                 </button>
                             </div>

@@ -33,7 +33,7 @@ public class EditorialControlador {
             mav.addObject("exito", flashMap.get("exito-name"));
             mav.addObject("error", flashMap.get("error-name"));
         }
-        List<Editorial> editoriales = editorialServicio.obtenerEditoriales();
+        List<Editorial> editoriales = editorialServicio.obtenerEditorial();
         editoriales.sort(Editorial.compararNombre);
         mav.addObject("editoriales", editoriales);
         return mav;

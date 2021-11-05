@@ -47,7 +47,7 @@ public class LibroServicio implements ValidacionInterface {
     }
 
     @Transactional
-    public void guardarLibro(Editorial editorial, Autor autor, Long isbn, String nombre, Integer anio, Integer ejemplares, String id, Boolean estado) throws Exception, MiExcepcion {
+    public void modificarLibro(Editorial editorial, Autor autor, Long isbn, String nombre, Integer anio, Integer ejemplares, String id, Boolean estado) throws Exception, MiExcepcion {
         try {
             validaPresencia(autor, "Autor");
             validaPresencia(editorial, "Editorial");
@@ -68,29 +68,6 @@ public class LibroServicio implements ValidacionInterface {
             libro.setNombre(nombre);
             libro.setAnio(anio);
             libro.setEjemplares(ejemplares);
-
-            libroRepositorio.save(libro);
-        } catch (MiExcepcion es) {
-            throw es;
-        } catch (Exception e) {
-            throw e;
-        }
-    }
-
-    @Transactional
-    public void modificarLibro(String id, Boolean estado) throws Exception, MiExcepcion {
-        try {
-            Optional<Libro> respuesta = libroRepositorio.findById(id);
-            validaPresencia(respuesta, "Libro");
-
-            Libro libro = libroRepositorio.findById(id).get();
-            if (libro.getEstado() == false ) {
-                validaIsbn(libro.getIsbn(), libroRepositorio.obtenerLibroxIsbn(libro.getIsbn()));
-            }
-            
-            estado = (estado) ? false : true;
-            
-            libro.setEstado(estado);
 
             libroRepositorio.save(libro);
         } catch (MiExcepcion es) {
@@ -131,6 +108,29 @@ public class LibroServicio implements ValidacionInterface {
             Libro libro = libroRepositorio.findById(id).get();
             libro.setEjemplaresPrestados(libro.getEjemplaresPrestados() - cantDevolucion);
             libro.setEjemplaresRestantes(cantDevolucion + cantActual);
+
+            libroRepositorio.save(libro);
+        } catch (MiExcepcion es) {
+            throw es;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Transactional
+    public void modificarLibro(String id, Boolean estado) throws Exception, MiExcepcion {
+        try {
+            Optional<Libro> respuesta = libroRepositorio.findById(id);
+            validaPresencia(respuesta, "Libro");
+
+            Libro libro = libroRepositorio.findById(id).get();
+            if (libro.getEstado() == false) {
+                validaIsbn(libro.getIsbn(), libroRepositorio.obtenerLibroxIsbn(libro.getIsbn()));
+            }
+
+            estado = (estado) ? false : true;
+
+            libro.setEstado(estado);
 
             libroRepositorio.save(libro);
         } catch (MiExcepcion es) {

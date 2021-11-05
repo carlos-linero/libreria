@@ -38,7 +38,7 @@ public interface ValidacionInterface {
     default void validaPresencia(Object entity, String nombreObjeto) throws MiExcepcion {
         try {
             if (entity == null) {
-                throw new MiExcepcion("Error al seleccionar " + nombreObjeto);
+                throw new MiExcepcion("Error al identificar " + nombreObjeto);
             }
         } catch (MiExcepcion es) {
             throw es;
@@ -112,7 +112,9 @@ public interface ValidacionInterface {
 
     default void validaEstado(Boolean estado) throws MiExcepcion {
         try {
-            if (estado == false) {
+            if (estado == null) {
+                throw new MiExcepcion("Error, no se espcifica si esta habilitado o deshabilitado");
+            }else if (estado == false) {
                 throw new MiExcepcion("No se encuentra habilitado");
             }
         } catch (MiExcepcion es) {
@@ -146,7 +148,7 @@ public interface ValidacionInterface {
                 throw new MiExcepcion("Documento no fue cargado");
             } else if (documento < 0) {
                 throw new MiExcepcion("Documento invalido, no puede ser un numero negativo");
-            } else if (Long.toString(documento).matches("^[0-9]{7,9}$")) {
+            } else if (Long.toString(documento).matches("^[0-9][^a-zA-Z]{6,9}$")==false) {
                 throw new MiExcepcion("Documento invalido");
             }
         } catch (MiExcepcion es) {

@@ -25,14 +25,6 @@ public class AutorControlador {
     @Autowired
     private AutorServicio autorServicio;
 
-    /*@GetMapping
-    public ModelAndView inicio() throws MiExcepcion, Exception {
-        try {
-            return new ModelAndView("autor");
-        } catch (Exception e) {
-            throw e;
-        }
-    }*/
     @GetMapping
     public ModelAndView mostrarAutores(HttpServletRequest request) throws MiExcepcion, Exception {
  
@@ -42,7 +34,7 @@ public class AutorControlador {
             mav.addObject("exito", flashMap.get("exito-name"));
             mav.addObject("error", flashMap.get("error-name"));
         }
-            List<Autor> autores = autorServicio.obtenerAutores();
+            List<Autor> autores = autorServicio.obtenerAutor();
             autores.sort(Autor.compararNombre);
             mav.addObject("autores", autores);
             return mav;

@@ -131,8 +131,8 @@ public class Libro {
 
     public static Comparator<Libro> compararNombre = new Comparator<Libro>() {
         @Override
-        public int compare(Libro a1, Libro a2) {
-            return a1.getNombre().compareToIgnoreCase(a2.getNombre());
+        public int compare(Libro l1, Libro l2) {
+            return l1.getNombre().compareToIgnoreCase(l2.getNombre());
         }
     };
 }

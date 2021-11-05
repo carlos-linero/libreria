@@ -1,5 +1,6 @@
 package ejeUno.libreriaSpring.Entidad;
 
+import java.util.Comparator;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,15 +21,14 @@ public class Cliente {
     @Column(nullable = false)
     private String apellido;
     @Column(nullable = false)
-    private Integer telefono;
+    private String telefono;
     @Column(nullable = false)
     private Boolean estado;
 
     public Cliente() {
     }
 
-    public Cliente(String id, Long documento, String nombre, String apellido, Integer telefono, Boolean estado) {
-        this.id = id;
+    public Cliente(Long documento, String nombre, String apellido, String telefono, Boolean estado) {
         this.documento = documento;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -68,11 +68,11 @@ public class Cliente {
         this.apellido = apellido;
     }
 
-    public Integer getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(Integer telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 
@@ -80,10 +80,14 @@ public class Cliente {
         return estado;
     }
 
-    public void setEstado(Boolean alta) {
-        this.estado = alta;
+    public void setEstado(Boolean estado) {
+        this.estado = estado;
     }
     
-    
-
+        public static Comparator<Cliente> compararNombre = new Comparator<Cliente>() {
+        @Override
+        public int compare(Cliente c1, Cliente c2) {
+            return c1.getNombre().compareToIgnoreCase(c2.getNombre());
+        }
+    };
 }

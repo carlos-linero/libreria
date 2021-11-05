@@ -23,7 +23,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
-@RequestMapping("libro")
+@RequestMapping("/libro")
 public class LibroControlador {
 
     @Autowired
@@ -35,7 +35,7 @@ public class LibroControlador {
 
     @GetMapping
     public ModelAndView mostrarLibros(HttpServletRequest request) throws MiExcepcion, Exception {
-        try {
+        
             ModelAndView mav = new ModelAndView("libro");
             Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
             if (flashMap != null) {
@@ -45,14 +45,10 @@ public class LibroControlador {
             List<Libro> libros = libroServicio.obtenerLibros();
             libros.sort(Libro.compararNombre);
             mav.addObject("libros", libros);
-            mav.addObject("autores", autorServicio.obtenerAutores());
-            mav.addObject("editoriales", editorialServicio.obtenerEditoriales());
+            mav.addObject("autores", autorServicio.obtenerAutor());
+            mav.addObject("editoriales", editorialServicio.obtenerEditorial());
             return mav;
-        } catch (MiExcepcion es) {
-            throw es;
-        } catch (Exception e) {
-            throw e;
-        }
+
     }
 
     @GetMapping("/bibliografia/{tipo}/{id}/{name}")
@@ -78,7 +74,7 @@ public class LibroControlador {
     public RedirectView guardar(@RequestParam Long isbn, @RequestParam String nombre, @RequestParam Integer anio, @RequestParam Integer Ejemplares, @RequestParam String autor, @RequestParam String editorial, RedirectAttributes attributes) throws Exception {
         try {
             Autor autorAux = autorServicio.obtenerAutor(autor);
-            Editorial editorialAux = editorialServicio.obteneEditorial(editorial);
+            Editorial editorialAux = editorialServicio.obtenerEditorial(editorial);
             libroServicio.guardarLibro(isbn, nombre, anio, Ejemplares, autorAux, editorialAux);
             attributes.addFlashAttribute("exito-name", "El Libro ha sido registrado exitosamente");
         } catch (Exception e) {
@@ -90,9 +86,9 @@ public class LibroControlador {
     @PostMapping("/editar")
     public RedirectView guardar(@RequestParam String editorial, @RequestParam String autor, @RequestParam Long isbn, @RequestParam String nombre, @RequestParam Integer anio, @RequestParam Integer Ejemplares, @RequestParam String id, @RequestParam Boolean estado, RedirectAttributes attributes) throws Exception {
         try {
-            Editorial editorialAux = editorialServicio.obteneEditorial(editorial);
+            Editorial editorialAux = editorialServicio.obtenerEditorial(editorial);
             Autor autorAux = autorServicio.obtenerAutor(autor);
-            libroServicio.guardarLibro(editorialAux, autorAux, isbn, nombre, anio, Ejemplares, id, estado);
+            libroServicio.modificarLibro(editorialAux, autorAux, isbn, nombre, anio, Ejemplares, id, estado);
             attributes.addFlashAttribute("exito-name", "El Libro ha sido editado exitosamente");
         } catch (Exception e) {
             attributes.addFlashAttribute("error-name", e.getMessage());
