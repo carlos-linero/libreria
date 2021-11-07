@@ -1,7 +1,8 @@
 package ejeUno.libreriaSpring.Entidad;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.Comparator;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,12 +22,14 @@ public class Prestamo {
     private String id;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private Calendar fechaPrestamo;
+    private LocalDateTime fechaPrestamo;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private Calendar fechaDevolucion;
+    private LocalDateTime fechaDevolucion;
     @Column(nullable = false)
-    private Boolean alta;
+    private Boolean estado;
+    @Column(nullable = false)
+    private Integer cantidad;
     @ManyToOne
     @JoinColumn(nullable = false)
     private Cliente cliente;
@@ -37,11 +40,11 @@ public class Prestamo {
     public Prestamo() {
     }
 
-    public Prestamo(String id, Calendar fechaPrestamo, Calendar fechaDevolucion, Boolean alta, Cliente cliente, Libro libro) {
-        this.id = id;
+    public Prestamo(LocalDateTime fechaPrestamo, LocalDateTime fechaDevolucion, Boolean estado, Integer cantidad, Cliente cliente, Libro libro) {
         this.fechaPrestamo = fechaPrestamo;
         this.fechaDevolucion = fechaDevolucion;
-        this.alta = alta;
+        this.estado = estado;
+        this.cantidad = cantidad;
         this.cliente = cliente;
         this.libro = libro;
     }
@@ -54,28 +57,36 @@ public class Prestamo {
         this.id = id;
     }
 
-    public Calendar getFechaPrestamo() {
+    public LocalDateTime getFechaPrestamo() {
         return fechaPrestamo;
     }
 
-    public void setFechaPrestamo(Calendar fechaPrestamo) {
+    public void setFechaPrestamo(LocalDateTime fechaPrestamo) {
         this.fechaPrestamo = fechaPrestamo;
     }
 
-    public Calendar getFechaDevolucion() {
+    public LocalDateTime getFechaDevolucion() {
         return fechaDevolucion;
     }
 
-    public void setFechaDevolucion(Calendar fechaDevolucion) {
+    public void setFechaDevolucion(LocalDateTime fechaDevolucion) {
         this.fechaDevolucion = fechaDevolucion;
     }
 
-    public Boolean getAlta() {
-        return alta;
+    public Boolean getEstado() {
+        return estado;
     }
 
-    public void setAlta(Boolean alta) {
-        this.alta = alta;
+    public void setEstado(Boolean estado) {
+        this.estado = estado;
+    }
+
+    public Integer getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(Integer cantidad) {
+        this.cantidad = cantidad;
     }
 
     public Cliente getCliente() {
@@ -94,5 +105,10 @@ public class Prestamo {
         this.libro = libro;
     }
 
- 
+    public static Comparator<Prestamo> compararNombre = new Comparator<Prestamo>() {
+        @Override
+        public int compare(Prestamo p1, Prestamo p2) {
+            return p1.getCliente().getNombre().compareToIgnoreCase(p2.getCliente().getNombre());
+        }
+    };
 }

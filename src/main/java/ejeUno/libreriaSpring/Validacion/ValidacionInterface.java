@@ -1,9 +1,11 @@
 package ejeUno.libreriaSpring.Validacion;
 
 import ejeUno.libreriaSpring.Excepciones.MiExcepcion;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public interface ValidacionInterface {
 
@@ -110,12 +112,12 @@ public interface ValidacionInterface {
         }
     }
 
-    default void validaEstado(Boolean estado) throws MiExcepcion {
+    default void validaEstado(Boolean estado, String tipo) throws MiExcepcion {
         try {
             if (estado == null) {
                 throw new MiExcepcion("Error, no se espcifica si esta habilitado o deshabilitado");
-            }else if (estado == false) {
-                throw new MiExcepcion("No se encuentra habilitado");
+            } else if (estado == false) {
+                throw new MiExcepcion("'" + tipo + "' no se encuentra habilitado");
             }
         } catch (MiExcepcion es) {
             throw es;
@@ -127,13 +129,19 @@ public interface ValidacionInterface {
     default void validaTransaccion(Integer cantTransaccion, Integer cantActual, Integer cantTotal) throws MiExcepcion {
         try {
             if (cantTransaccion == null) {
-                throw new MiExcepcion("Valor de cantidad de prestamo sin declarar");
+                throw new MiExcepcion("Cantidad de transaccion sin declarar");
             } else if (cantActual == null) {
-                throw new MiExcepcion("Valor de cantidad actual sin declarar");
-            } else if (cantTransaccion > cantTotal) {
-                throw new MiExcepcion("Cantidad del prestamo supera a la cantidad total");
+                throw new MiExcepcion("Cantidad actual sin declarar");
+            } else if (cantTotal == null) {
+                throw new MiExcepcion("Cantidad total sin declarar");
+            } else if (cantTransaccion == 0) {
+                throw new MiExcepcion("Valor de transaccion no puede ser cero");
+            }else if (cantTransaccion < 0) {
+                throw new MiExcepcion("Valor de transaccion no puede ser negativo");
+            }else if (cantTransaccion > cantTotal) {
+                throw new MiExcepcion("Cantidad supera a la cantidad total de ejemplares");
             } else if (cantTransaccion > cantActual) {
-                throw new MiExcepcion("Cantidad del prestamo supera a la cantidad actual");
+                throw new MiExcepcion("Cantidad supera a la cantidad maxima de la transaccion");
             }
         } catch (MiExcepcion es) {
             throw es;
@@ -148,7 +156,7 @@ public interface ValidacionInterface {
                 throw new MiExcepcion("Documento no fue cargado");
             } else if (documento < 0) {
                 throw new MiExcepcion("Documento invalido, no puede ser un numero negativo");
-            } else if (Long.toString(documento).matches("^[0-9][^a-zA-Z]{6,9}$")==false) {
+            } else if (Long.toString(documento).matches("^[0-9][^a-zA-Z]{6,9}$") == false) {
                 throw new MiExcepcion("Documento invalido");
             }
         } catch (MiExcepcion es) {
@@ -162,9 +170,29 @@ public interface ValidacionInterface {
         try {
             if (telefono == null) {
                 throw new MiExcepcion("Telefono no fue cargado");
-            } else if (telefono.length()<7) {
+            } else if (telefono.length() < 7) {
                 throw new MiExcepcion("Telefono invalido, no puede tener menos de 7 digitos");
-            } 
+            }
+        } catch (MiExcepcion es) {
+            throw es;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    default void validaFechaDevolucion(LocalDateTime fechaDevolucion) throws MiExcepcion {
+        try {
+            LocalDateTime actual = LocalDateTime.now();
+            if (fechaDevolucion == null) {
+                throw new MiExcepcion("La fecha de devolucion no fue cargada");
+            } else if (fechaDevolucion.isEqual(actual)) {
+                throw new MiExcepcion("La fecha de devolucion no puede ser la misma que la actual");
+            } else if (fechaDevolucion.isBefore(actual)) {
+                throw new MiExcepcion("Marty McFly eres tu?");
+            } else if (fechaDevolucion.isAfter(actual.plusYears(1).plusDays(1))) {
+                throw new MiExcepcion("El tiempo maximo de prestamo es de un año");
+            }
+
         } catch (MiExcepcion es) {
             throw es;
         } catch (Exception e) {

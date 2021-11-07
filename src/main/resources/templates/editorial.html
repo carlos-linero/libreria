@@ -36,6 +36,9 @@
                             <a class="nav-link" th:href="@{/cliente}">Cliente</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" th:href="@{/prestamo}">prestamo</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" th:href="@{/libro}">Libro</a>
                         </li>
                         <li class="nav-item">
@@ -143,12 +146,12 @@
                             <form autocomplete="off" th:action="@{editorial/modificar-nombre}" method="POST"
                                 class="needs-validation" novalidate>
                                 <label th:attr="for=${editorial.id}">Nombre del la Editorial</label>
-                                <input class="form-control" th:value="${editorial.nombre}" type="text"
-                                    name="nombre" placeholder="Nombre" required>
+                                <input class="form-control" th:value="${editorial.nombre}" type="text" name="nombre"
+                                    placeholder="Nombre" required>
                                 <input type="hidden" th:value="${editorial.estado}" name="estado">
                                 <input type="hidden" th:value="${editorial.id}" name="id">
                                 <div class="invalid-feedback">creo que se te olvido algo :(</div>
-                                
+
                                 <hr class="my-4">
                                 <div class="modal-dialog-centered justify-content-center">
                                     <button title="Guardar Cambios" type="submit" value="Submit" class="btn no-btn">
@@ -178,8 +181,8 @@
                                 <input type="hidden" th:attr="value=${editorial.estado}" name="estado">
                                 <input type="hidden" th:attr="value=${editorial.id}" name="id">
 
-                            <hr class="my-4">
-                            <div class="modal-dialog-centered justify-content-center">
+                                <hr class="my-4">
+                                <div class="modal-dialog-centered justify-content-center">
                                     <button title="Confirmar" type="submit" value="Submit"
                                         class="btn no-btn">Si</button>
                                 </div>
@@ -205,7 +208,7 @@
                             <input class="form-control" id="nombre" placeholder="Nombre" required type="text"
                                 name="nombre">
                             <div class="invalid-feedback">creo que se te olvido algo :(</div>
-                            
+
                             <hr class="my-4">
                             <div class="modal-dialog-centered justify-content-center">
                                 <button title="Guardar Editorial" type="submit" value="Submit" class="btn no-btn">

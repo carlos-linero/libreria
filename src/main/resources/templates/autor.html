@@ -36,6 +36,9 @@
                             <a class="nav-link" th:href="@{/cliente}">Cliente</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" th:href="@{/prestamo}">prestamo</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" th:href="@{/libro}">Libro</a>
                         </li>
                         <li class="nav-item">
@@ -178,7 +181,7 @@
                             </div>
                             <input type="hidden" th:attr="value=${autor.estado}" name="estado">
                             <input type="hidden" th:attr="value=${autor.id}" name="id">
-                            
+
 
                             <hr class="my-4">
                             <div class="modal-dialog-centered justify-content-center">
@@ -204,7 +207,7 @@
                         <label for="nombre">Nombre del Autor</label>
                         <input class="form-control" id="nombre" placeholder="Nombre" required type="text" name="nombre">
                         <div class="invalid-feedback">creo que se te olvido algo :(</div>
-                        
+
                         <hr class="my-4">
                         <div class="modal-dialog-centered justify-content-center">
                             <button title="Guardar Autor" type="submit" value="Submit" class="btn no-btn">

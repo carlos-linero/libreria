@@ -35,19 +35,19 @@ public class LibroControlador {
 
     @GetMapping
     public ModelAndView mostrarLibros(HttpServletRequest request) throws MiExcepcion, Exception {
-        
-            ModelAndView mav = new ModelAndView("libro");
-            Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
-            if (flashMap != null) {
-                mav.addObject("exito", flashMap.get("exito-name"));
-                mav.addObject("error", flashMap.get("error-name"));
-            }
-            List<Libro> libros = libroServicio.obtenerLibros();
-            libros.sort(Libro.compararNombre);
-            mav.addObject("libros", libros);
-            mav.addObject("autores", autorServicio.obtenerAutor());
-            mav.addObject("editoriales", editorialServicio.obtenerEditorial());
-            return mav;
+
+        ModelAndView mav = new ModelAndView("libro");
+        Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
+        if (flashMap != null) {
+            mav.addObject("exito", flashMap.get("exito-name"));
+            mav.addObject("error", flashMap.get("error-name"));
+        }
+        List<Libro> libros = libroServicio.obtenerLibro();
+        libros.sort(Libro.compararNombre);
+        mav.addObject("libros", libros);
+        mav.addObject("autores", autorServicio.obtenerAutor());
+        mav.addObject("editoriales", editorialServicio.obtenerEditorial());
+        return mav;
 
     }
 
@@ -55,9 +55,9 @@ public class LibroControlador {
     public ModelAndView bibliografia(@PathVariable String tipo, @PathVariable String id, @PathVariable String name) throws MiExcepcion, Exception {
 
         try {
-       
+
             ModelAndView mav = new ModelAndView("bibliografia");
-            List<Libro> libros = libroServicio.obtenerLibros(id, tipo);
+            List<Libro> libros = libroServicio.obtenerLibro(id, tipo);
             libros.sort(Libro.compararNombre);
             mav.addObject("name", name);
             mav.addObject("tipo", tipo);

@@ -57,7 +57,7 @@ public class AutorServicio implements ValidacionInterface {
     @Transactional
     public void modificarAutor(String id, String nombre, Boolean estado) throws Exception, MiExcepcion {
         try {
-            validaEstado(estado);
+            validaEstado(estado, "Autor");
             Optional<Autor> respuesta = autorRepositorio.findById(id);
 
             validacionNombrePersona(nombre);
@@ -80,7 +80,9 @@ public class AutorServicio implements ValidacionInterface {
             //return autorRepositorio.obtenerAutores(true);
             Optional<Autor> respuesta = autorRepositorio.findById(id);
             validaPresencia(respuesta, "Autor");
-            return autorRepositorio.findById(id).get();
+            Autor autor = autorRepositorio.findById(id).get();
+            validaEstado(autor.getEstado(), "Autor");
+            return autor;
         } catch (Exception e) {
             throw e;
         }

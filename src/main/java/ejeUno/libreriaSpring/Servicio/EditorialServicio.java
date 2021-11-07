@@ -56,7 +56,7 @@ public class EditorialServicio implements ValidacionInterface {
     @Transactional
     public void modificarEditorial(String id, String nombre, Boolean estado) throws Exception, MiExcepcion {
         try {
-            validaEstado(estado);
+            validaEstado(estado, "Editorial");
             Optional<Editorial> respuesta = editorialRepositorio.findById(id);
 
             validacionNombrePersona(nombre);

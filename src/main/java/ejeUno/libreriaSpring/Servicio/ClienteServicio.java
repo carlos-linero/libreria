@@ -62,7 +62,7 @@ public class ClienteServicio implements ValidacionInterface {
     @Transactional
     public void modificarCliente(String nombre, String apellido, Long documento, String telefono, String id, Boolean estado) throws Exception, MiExcepcion {
         try {
-            validaEstado(estado);
+            validaEstado(estado, "Libro");
             Optional<Cliente> respuesta = clienteRepositorio.findById(id);
 
             validaPresencia(respuesta, "Autor");
@@ -74,7 +74,6 @@ public class ClienteServicio implements ValidacionInterface {
             cliente.setApellido(apellido);
             cliente.setDocumento(documento);
             cliente.setTelefono(telefono);
-            
 
             clienteRepositorio.save(cliente);
         } catch (MiExcepcion es) {
@@ -101,6 +100,15 @@ public class ClienteServicio implements ValidacionInterface {
         try {
             //return autorRepositorio.obtenerAutores(true);
             return clienteRepositorio.findAll();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Cliente> obtenerCliente(Boolean estado) throws Exception {
+        try {
+            return clienteRepositorio.findAll(estado);
         } catch (Exception e) {
             throw e;
         }

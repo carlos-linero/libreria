@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIBRERIA</title>
+    <!-- <link rel="stylesheet" th:href="@{../static/style.css}"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/923eec1284.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <!--<link rel="stylesheet" href="../static/css/style.css">-->
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light ">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/inicio}">Egg-Book</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+                aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/cliente}">Cliente</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/prestamo}">prestamo</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" th:href="@{/libro}">Libro</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/autor}">Autor</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/editorial}">Editorial</a>
+                        </li>
+                        <li th:if="${clientes.isEmpty()} or ${libros.isEmpty()}" class="nav-item">
+
+                            <a title="Registrar Prestamo" class="btn" aria-disabled="true">Registrar Prestamo</a>
+                        </li>
+                        <li th:unless="${clientes.isEmpty()} or ${libros.isEmpty()}" class="nav-item">
+                            <a title="Registrar Prestamo" data-bs-toggle="modal" class="btn"
+                                data-bs-target="#agregarPrestamo">Registrar Prestamo</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+    </nav>
+    <div th:if="${prestamos.isEmpty()}" class="text-center">
+        <div th:if="${clientes.isEmpty()} or ${libros.isEmpty()}">
+            <h4>No hay ningún prestamo registrado</h4>
+            <h5>Para poder realizar un prestamo primero debes tener al menos un cliente y una libro registrado</h5>
+        </div>
+        <div th:unless="${clientes.isEmpty()} or ${libros.isEmpty()}">
+            <h5>No hay ningún prestamo registrado</h5>
+            <button title="Registrar Prestamo" type="button" class="btn" data-bs-toggle="modal"
+                data-bs-target="#agregarPrestamo">
+                Registrar Prestamo
+            </button>
+        </div>
+    </div>
+
+    <div class=" container-fluid">
+        <div class="row justify-content-center">
+            <div class="alert alert-secondary alert-dismissible fade show col-5 text-center" role="alert"
+                th:if="${exito != null}">
+                <strong th:text="${exito}"></strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div class="alert alert-warning alert-dismissible fade show col-5 text-center" role="alert"
+                th:if="${error != null}">
+                <strong th:text="${error}"></strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    <main th:unless="${prestamos.isEmpty()}" class="container-fluid">
+        <div class="table-responsive">
+            <table class="table table-hover text-center table-sm table-borderless">
+                <thead>
+                    <tr>
+                        <th scope="col">Cliente</th>
+                        <th scope="col">Libro</th>
+                        <th scope="col">Fecha de devolución</th>
+                        <th scope="col">Realizar devolución</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="prestamo : ${prestamos}">
+                        <td th:text="${prestamo.cliente.nombre}"></td>
+                        <td th:text="${prestamo.libro.nombre}"></td>
+                        <td th:text="${prestamo.fechaDevolucion}"></td>
+
+                        <td th:if="${prestamo.estado}">
+                            <button class="btn" title="devolucion" type="button" data-bs-toggle="modal"
+                                th:attr="data-bs-target=|#modificar${prestamo.id}|">
+                                <i class="far fa-edit"></i>
+                            </button>
+                        </td>
+                        <td th:unless="${prestamo.estado}">
+                            <button disabled class="btn" title="devolucion" type="button">
+                                <i class="far fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Editar Libro -->
+    <div th:each="prestamo : ${prestamos}">
+        <div class="modal fade" th:attr="id=|modificar${prestamo.id}|" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Devolución</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <form class="needs-validation" method="POST" enctype="multipart/form-data"
+                                th:action="@{prestamo/devolucion}" novalidate>
+
+                                <label>Cantidad a devolver</label>
+                                <input class="form-control" type="number" name="cantidad" value="0" required>
+
+                                <div class="invalid-feedback">creo que se te olvido algo :(</div>
+
+                                <hr class="my-4">
+                                <div class="modal-dialog-centered justify-content-center">
+                                    <button type="submit" class="btn no-btn">Realizar devolución</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- habilitar/deshabilitar Libro 
+        <div class="modal fade" th:attr="id=|habilitarDeshabilitar${libro.id}|" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" th:text="${libro.estado} ? 'Deshabilitar Libro':'Habilitar Libro'"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form autocomplete="off" th:action="@{libro/modificar-estado}" method="POST">
+                            <div><span th:text="|Confirmas el cambio de estado de el libro: ${libro.nombre}|"></span>
+                            </div>
+                            <input type="hidden" th:attr="value=${libro.estado}" name="estado">
+                            <input type="hidden" th:attr="value=${libro.id}" name="id">
+
+                            <hr class="my-4">
+                            <div class="modal-dialog-centered justify-content-center">
+                                <button title="Confirmar" type="submit" value="Submit" class="btn no-btn">Si</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+    </div>
+
+
+    <!-- Registrar Prestamo -->
+    <div class="modal fade" id="agregarPrestamo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Registrar Prestamo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <form class="needs-validation" method="POST" enctype="multipart/form-data"
+                            th:action="@{prestamo/guardar}" novalidate>
+
+                            <label>Cantidad a retirar</label>
+                            <input class="form-control" type="number" name="cantidad" value="0" required>
+                            <div class="invalid-feedback">creo que se te olvido algo :(</div>
+                            <br>
+
+
+                            <label>Fecha de </label> <br>
+                            <input class="form-control" type="date" name="fechaDevolucion" required>
+                            <div class="invalid-feedback">creo que se te olvido algo :(</div>
+                            <br>
+
+
+                            <label>Cliente</label> <br>
+                            <select class="form-select" aria-label="Default select example" name="cliente" required>
+                                <option selected disabled value="">Selecciona un Cliente</option>
+                                <option th:each="cliente : ${clientes}" th:if="${cliente.estado}"
+                                    th:text="${cliente.nombre}" th:value="${cliente.id}">
+                                </option>
+                            </select>
+                            <div class="invalid-feedback">creo que se te olvido algo :(</div>
+
+                            <label>Libro</label> <br>
+                            <select class="form-select" aria-label="Default select example" name="libro" required>
+                                <option selected disabled value="">Selecciona un Libro</option>
+                                <option th:each="libro : ${libros}" th:if="${libro.estado}" th:text="${libro.nombre}"
+                                    th:value="${libro.id}"></option>
+                            </select>
+                            <div class="invalid-feedback">creo que se te olvido algo :(</div>
+
+                            <hr class="my-4">
+                            <div class="modal-dialog-centered justify-content-center">
+                                <button title="Guardar Libro" type="submit" value="Submit" class="btn no-btn">
+                                    Realizar Prestamo
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="fixed-bottom container-fluid text-center"><span>© Carlos Linero</span></footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <script>
+        (function () {
+            'use strict'
+
+
+            var forms = document.querySelectorAll('.needs-validation')
+
+
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()</script>
+</body>
+
+</html>

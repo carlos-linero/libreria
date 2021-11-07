@@ -18,4 +18,7 @@ public interface LibroRepositorio extends JpaRepository<Libro, String> {
 
     @Query("SELECT count(l) FROM Libro l WHERE l.isbn = :isbn and l.estado = true")
     public Long obtenerLibroxIsbn(@Param("isbn") Long isbn);
+
+    @Query("SELECT l FROM Libro l WHERE l.estado = :estado")
+    public List<Libro> findAll(@Param("estado") Boolean estado);
 }
