@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,6 +53,25 @@ public class PrestamoControlador {
 
         return mav;
 
+    }
+    
+        @GetMapping("/historial/{estado}/{id}/{name}/{lastn}")
+    public ModelAndView historialPrestamo(@PathVariable Boolean estado, @PathVariable String id, @PathVariable String name, @PathVariable String lastn) throws MiExcepcion, Exception {
+
+        try {
+            ModelAndView mav = new ModelAndView("historial-prestamo");
+            List<Prestamo> prestamos = prestamoServicio.obtenerPrestamo(estado, id);
+            prestamos.sort(Prestamo.compararNombre);
+            mav.addObject("name", name);
+            mav.addObject("lastn", lastn);
+            mav.addObject("estado", estado);
+            mav.addObject("prestamos", prestamos);
+            return mav;
+        } catch (MiExcepcion es) {
+            throw es;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     @PostMapping("/guardar")

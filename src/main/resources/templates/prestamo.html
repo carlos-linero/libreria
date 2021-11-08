@@ -93,8 +93,9 @@
             <table class="table table-hover text-center table-sm table-borderless">
                 <thead>
                     <tr>
-                        <th scope="col">Cliente</th>
+                        <th scope="col">Nombre</th>
                         <th scope="col">Libro</th>
+                        <th scope="col">Ejemplares</th>
                         <th scope="col">Fecha de devolución</th>
                         <th scope="col">Realizar devolución</th>
                     </tr>
@@ -103,6 +104,7 @@
                     <tr th:each="prestamo : ${prestamos}">
                         <td th:text="${prestamo.cliente.nombre}"></td>
                         <td th:text="${prestamo.libro.nombre}"></td>
+                        <td th:text="${prestamo.cantidadRegistro}"></td>
                         <td th:text="${prestamo.fechaDevolucion}"></td>
 
                         <td th:if="${prestamo.estado}">
@@ -219,7 +221,7 @@
                             <label>Libro</label> <br>
                             <select class="form-select" aria-label="Default select example" name="libro" required>
                                 <option selected disabled value="">Selecciona un Libro</option>
-                                <option th:each="libro : ${libros}" th:if="${libro.estado}" th:text="${libro.nombre}"
+                                <option th:each="libro : ${libros}" th:if="${libro.estado} and ${libro.ejemplaresRestantes > 0}" th:text="${libro.nombre}"
                                     th:value="${libro.id}"></option>
                             </select>
                             <div class="invalid-feedback">creo que se te olvido algo :(</div>

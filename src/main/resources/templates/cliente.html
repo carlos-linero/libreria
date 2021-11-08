@@ -86,6 +86,8 @@
                 <thead>
                     <tr>
                         <th scope="col">Nombre</th>
+                        <th scope="col">apellido</th>
+                        <th scope="col">Datos personales</th>
                         <th scope="col">Prestamos</th>
                         <th scope="col">Editar</th>
                         <th scope="col">Des/Habilitar</th>
@@ -94,14 +96,18 @@
                 <tbody>
                     <tr th:each="cliente : ${clientes}">
                         <td th:text="${cliente.nombre}"></td>
+                        <td th:text="${cliente.apellido}"></td>
 
-                        <td th:if="${cliente.estado}">
-                            <a title="Prestamos" class="btn">
-                                <i class="far fa-paper-plane"></i></a>
+                        <td>
+                            <button class="btn" title="Datos personales" type="button" data-bs-toggle="modal"
+                                th:attr="data-bs-target=|#datos${cliente.id}|">
+                                <i class="far fa-comment-dots"></i>
+                            </button>
                         </td>
 
-                        <td th:unless="${cliente.estado}">
-                            <button disabled title="Prestamos" type="button" class="btn">
+                        <td>
+                            <button class="btn" title="Historial Prestamo" type="button" data-bs-toggle="modal"
+                                th:attr="data-bs-target=|#hprestamo${cliente.id}|">
                                 <i class="far fa-paper-plane"></i>
                             </button>
                         </td>
@@ -206,13 +212,82 @@
                 </div>
             </div>
         </div>
+        <!-- Datos Personales cliente -->
+        <div class="modal fade" th:attr="id=|datos${cliente.id}|" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title col-8 text-end" th:text="|${cliente.nombre} ${cliente.apellido}|"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover text-center table-sm table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Documento</th>
+                                        <th scope="col">Telefono</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td th:text="${cliente.documento}"></td>
+                                        <td th:text="${cliente.telefono}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historial Prestamos -->
+        <div class="modal fade" th:attr="id=|hprestamo${cliente.id}|" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title col-8 text-end" th:text="|${cliente.nombre} ${cliente.apellido}|"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover text-center table-sm table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" th:if="${cliente.estado}">Prestamos vigentes</th>
+                                        <th scope="col">Prestamos finalizados</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td th:if="${cliente.estado}">
+                                            <a title="Prestamos vigentes" class="btn"
+                                               th:href="@{/prestamo/historial/__true__/__${cliente.id}__/__${cliente.nombre}__/__${cliente.apellido}__}" >
+                                                <i class="far fa-newspaper"></i> </a>
+                                        </td>
+
+                                        <td>
+                                            <a title="Prestamos finalizados" class="btn"
+                                               th:href="@{/prestamo/historial/__false__/__${cliente.id}__/__${cliente.nombre}__/__${cliente.apellido}__}">
+                                                <i class="far fa-folder-open"></i> </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
     <!-- agregar cliente -->
     <div class="modal fade" id="agregarCliente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Agregar Cliente</h5>
+                    <h5 class="modal-title col-8 text-end">Agregar Cliente</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

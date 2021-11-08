@@ -45,6 +45,7 @@ public class PrestamoServicio implements ValidacionInterface {
         try {
             Prestamo prestamo = new Prestamo();
             prestamo.setCantidad(cantidad);
+            prestamo.setCantidadRegistro(cantidad);
             prestamo.setFechaPrestamo(LocalDate.now());
             prestamo.setFechaDevolucion(fechaDevolucion);
             prestamo.setEstado(true);
@@ -124,6 +125,15 @@ public class PrestamoServicio implements ValidacionInterface {
     public List<Prestamo> obtenerPrestamo(Boolean estado) throws Exception {
         try {
             return prestamoRepositorio.findAll(estado);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    
+        @Transactional(readOnly = true)
+    public List<Prestamo> obtenerPrestamo(Boolean estado, String id) throws Exception {
+        try {
+            return prestamoRepositorio.findAll(estado, id);
         } catch (Exception e) {
             throw e;
         }

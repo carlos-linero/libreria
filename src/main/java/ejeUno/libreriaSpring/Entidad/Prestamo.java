@@ -29,6 +29,8 @@ public class Prestamo {
     private Boolean estado;
     @Column(nullable = false)
     private Integer cantidad;
+    @Column(nullable = false)
+    private Integer cantidadRegistro;
     @ManyToOne
     @JoinColumn(nullable = false)
     private Cliente cliente;
@@ -39,11 +41,12 @@ public class Prestamo {
     public Prestamo() {
     }
 
-    public Prestamo(LocalDate fechaPrestamo, LocalDate fechaDevolucion, Boolean estado, Integer cantidad, Cliente cliente, Libro libro) {
+    public Prestamo(LocalDate fechaPrestamo, LocalDate fechaDevolucion, Boolean estado, Integer cantidad, Integer cantidadRegistro, Cliente cliente, Libro libro) {
         this.fechaPrestamo = fechaPrestamo;
         this.fechaDevolucion = fechaDevolucion;
         this.estado = estado;
         this.cantidad = cantidad;
+        this.cantidadRegistro = cantidadRegistro;
         this.cliente = cliente;
         this.libro = libro;
     }
@@ -88,6 +91,14 @@ public class Prestamo {
         this.cantidad = cantidad;
     }
 
+    public Integer getCantidadRegistro() {
+        return cantidadRegistro;
+    }
+
+    public void setCantidadRegistro(Integer cantidadRegistro) {
+        this.cantidadRegistro = cantidadRegistro;
+    }
+
     public Cliente getCliente() {
         return cliente;
     }
@@ -112,7 +123,6 @@ public class Prestamo {
         Prestamo.compararNombre = compararNombre;
     }
 
-   
 
     public static Comparator<Prestamo> compararNombre = new Comparator<Prestamo>() {
         @Override
