@@ -3,6 +3,7 @@ package ejeUno.libreriaSpring.Controlador;
 import ejeUno.libreriaSpring.Entidad.Cliente;
 import ejeUno.libreriaSpring.Excepciones.MiExcepcion;
 import ejeUno.libreriaSpring.Servicio.ClienteServicio;
+import ejeUno.libreriaSpring.Servicio.PrestamoServicio;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,8 @@ public class ClienteControlador {
 
     @Autowired
     private ClienteServicio clienteServicio;
+    @Autowired
+    private PrestamoServicio prestamoServicio;
 
     @GetMapping
     public ModelAndView mostrarClientes(HttpServletRequest request) throws MiExcepcion, Exception {
@@ -50,9 +53,9 @@ public class ClienteControlador {
         }
         return new RedirectView("/cliente");
     }
-    
-        @PostMapping("/modificar")
-    public RedirectView guardar(@RequestParam String nombre, @RequestParam String apellido, @RequestParam Long documento, @RequestParam String telefono, @RequestParam String id, @RequestParam Boolean estado,RedirectAttributes attributes) throws Exception {
+
+    @PostMapping("/modificar")
+    public RedirectView guardar(@RequestParam String nombre, @RequestParam String apellido, @RequestParam Long documento, @RequestParam String telefono, @RequestParam String id, @RequestParam Boolean estado, RedirectAttributes attributes) throws Exception {
         try {
             clienteServicio.modificarCliente(nombre, apellido, documento, telefono, id, estado);
             attributes.addFlashAttribute("exito-name", "Los datos del cliente han sido actualizados exitosamente");
@@ -65,7 +68,7 @@ public class ClienteControlador {
     @PostMapping("/modificar-estado")
     public RedirectView guardar(@RequestParam Boolean estado, @RequestParam String id, RedirectAttributes attributes) throws Exception {
         try {
-            clienteServicio.modificarCliente(id, estado);
+            clienteServicio.modificarCliente(id, estado, prestamoServicio.obtenerCantidadPrestamo(id));
             attributes.addFlashAttribute("exito-name", "El cliente ha sido " + ((estado) ? "deshabilitado" : "habilitado") + " exitosamente");
         } catch (Exception e) {
             attributes.addFlashAttribute("error-name", e.getMessage());

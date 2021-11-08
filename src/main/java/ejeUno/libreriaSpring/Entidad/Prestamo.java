@@ -1,8 +1,9 @@
 package ejeUno.libreriaSpring.Entidad;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,12 +21,10 @@ public class Prestamo {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private LocalDateTime fechaPrestamo;
-    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDate fechaPrestamo;
     @Column(nullable = false)
-    private LocalDateTime fechaDevolucion;
+    private LocalDate fechaDevolucion;
     @Column(nullable = false)
     private Boolean estado;
     @Column(nullable = false)
@@ -40,7 +39,7 @@ public class Prestamo {
     public Prestamo() {
     }
 
-    public Prestamo(LocalDateTime fechaPrestamo, LocalDateTime fechaDevolucion, Boolean estado, Integer cantidad, Cliente cliente, Libro libro) {
+    public Prestamo(LocalDate fechaPrestamo, LocalDate fechaDevolucion, Boolean estado, Integer cantidad, Cliente cliente, Libro libro) {
         this.fechaPrestamo = fechaPrestamo;
         this.fechaDevolucion = fechaDevolucion;
         this.estado = estado;
@@ -57,19 +56,19 @@ public class Prestamo {
         this.id = id;
     }
 
-    public LocalDateTime getFechaPrestamo() {
+    public LocalDate getFechaPrestamo() {
         return fechaPrestamo;
     }
 
-    public void setFechaPrestamo(LocalDateTime fechaPrestamo) {
+    public void setFechaPrestamo(LocalDate fechaPrestamo) {
         this.fechaPrestamo = fechaPrestamo;
     }
 
-    public LocalDateTime getFechaDevolucion() {
+    public LocalDate getFechaDevolucion() {
         return fechaDevolucion;
     }
 
-    public void setFechaDevolucion(LocalDateTime fechaDevolucion) {
+    public void setFechaDevolucion(LocalDate fechaDevolucion) {
         this.fechaDevolucion = fechaDevolucion;
     }
 
@@ -104,6 +103,16 @@ public class Prestamo {
     public void setLibro(Libro libro) {
         this.libro = libro;
     }
+
+    public static Comparator<Prestamo> getCompararNombre() {
+        return compararNombre;
+    }
+
+    public static void setCompararNombre(Comparator<Prestamo> compararNombre) {
+        Prestamo.compararNombre = compararNombre;
+    }
+
+   
 
     public static Comparator<Prestamo> compararNombre = new Comparator<Prestamo>() {
         @Override

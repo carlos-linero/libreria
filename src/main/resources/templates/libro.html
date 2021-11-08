@@ -36,7 +36,7 @@
                             <a class="nav-link" th:href="@{/cliente}">Cliente</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/prestamo}">prestamo</a>
+                            <a class="nav-link" th:href="@{/prestamo}">Prestamo</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" aria-current="page" th:href="@{/libro}">Libro</a>
@@ -96,6 +96,7 @@
                         <th scope="col">Titulo</th>
                         <th scope="col">Autor</th>
                         <th scope="col">Editorial</th>
+                        <th scope="col">Disponible</th>
                         <th scope="col">Editar</th>
                         <th scope="col">Des/Habilitar</th>
                     </tr>
@@ -105,6 +106,9 @@
                         <td th:text="${libro.nombre}"></td>
                         <td th:text="${libro.autor.nombre}"></td>
                         <td th:text="${libro.editorial.nombre}"></td>
+                         
+                        <td th:if="${libro.estado}" th:text="${libro.ejemplaresRestantes}"></td>
+                        <td th:unless="${libro.estado}" th:text="0"></td>
 
                         <td th:if="${libro.estado}">
                             <button class="btn" title="Editar" type="button" data-bs-toggle="modal"

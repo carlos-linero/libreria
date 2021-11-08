@@ -40,13 +40,16 @@ public class ClienteServicio implements ValidacionInterface {
     }
 
     @Transactional
-    public void modificarCliente(String id, Boolean estado) throws Exception, MiExcepcion {
+    public void modificarCliente(String id, Boolean estado, Long cantidad) throws Exception, MiExcepcion {
         try {
             Optional<Cliente> respuesta = clienteRepositorio.findById(id);
             validaPresencia(respuesta, "Editorial");
             validaPresencia(estado, "'Alta'");
-
+            
             Cliente cliente = clienteRepositorio.findById(id).get();
+            if (cliente.getEstado() == true) {
+               validaPrestados(cantidad);
+            }
             estado = (estado) ? false : true;
 
             cliente.setEstado(estado);

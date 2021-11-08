@@ -25,19 +25,20 @@ public class AutorControlador {
     @Autowired
     private AutorServicio autorServicio;
 
+
     @GetMapping
     public ModelAndView mostrarAutores(HttpServletRequest request) throws MiExcepcion, Exception {
- 
-            ModelAndView mav = new ModelAndView("autor");
-            Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
+
+        ModelAndView mav = new ModelAndView("autor");
+        Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
         if (flashMap != null) {
             mav.addObject("exito", flashMap.get("exito-name"));
             mav.addObject("error", flashMap.get("error-name"));
         }
-            List<Autor> autores = autorServicio.obtenerAutor();
-            autores.sort(Autor.compararNombre);
-            mav.addObject("autores", autores);
-            return mav;
+        List<Autor> autores = autorServicio.obtenerAutor();
+        autores.sort(Autor.compararNombre);
+        mav.addObject("autores", autores);
+        return mav;
     }
 
     /*@GetMapping("/crear")
@@ -52,7 +53,6 @@ public class AutorControlador {
             throw e;
         }
     }*/
-
     @PostMapping("/guardar")
     public RedirectView guardar(@RequestParam String nombre, RedirectAttributes attributes) throws Exception {
         try {
@@ -79,7 +79,7 @@ public class AutorControlador {
     public RedirectView guardar(@RequestParam Boolean estado, @RequestParam String id, RedirectAttributes attributes) throws Exception {
         try {
             autorServicio.modificarAutor(id, estado);
-            attributes.addFlashAttribute("exito-name", "El Autor ha sido "+ ((estado)?"deshabilitado":"habilitado") +" exitosamente");
+            attributes.addFlashAttribute("exito-name", "El Autor ha sido " + ((estado) ? "deshabilitado" : "habilitado") + " exitosamente");
         } catch (Exception e) {
             attributes.addFlashAttribute("error-name", e.getMessage());
         }

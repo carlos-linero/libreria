@@ -7,14 +7,17 @@ import ejeUno.libreriaSpring.Excepciones.MiExcepcion;
 import ejeUno.libreriaSpring.Servicio.ClienteServicio;
 import ejeUno.libreriaSpring.Servicio.LibroServicio;
 import ejeUno.libreriaSpring.Servicio.PrestamoServicio;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -22,6 +25,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
+@RequestMapping("/prestamo")
 public class PrestamoControlador {
 
     @Autowired
@@ -31,8 +35,8 @@ public class PrestamoControlador {
     @Autowired
     private LibroServicio libroServicio;
 
-    @GetMapping("/prestamo")
-    public ModelAndView mostrarLibros(HttpServletRequest request) throws MiExcepcion, Exception {
+    @GetMapping
+    public ModelAndView mostrarPrestamos(HttpServletRequest request) throws MiExcepcion, Exception {
 
         ModelAndView mav = new ModelAndView("prestamo");
         Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
@@ -50,26 +54,28 @@ public class PrestamoControlador {
 
     }
 
-    @PostMapping("/guardar-prestamo")
-    public RedirectView guardar(@RequestParam LocalDateTime fechaDevolucion, @RequestParam Integer cantidad, @RequestParam String cliente, @RequestParam String libro, RedirectAttributes attributes) throws Exception {
+    @PostMapping("/guardar")
+    public RedirectView guardar(@RequestParam LocalDate fechaDevolucion, @RequestParam Integer cantidad, @RequestParam String cliente, @RequestParam String libro, RedirectAttributes attributes) throws Exception {
         try {
             Cliente clienteAux = clienteServicio.obtenerCliente(cliente);
             Libro libroAux = libroServicio.obtenerLibro(libro);
             prestamoServicio.guardarTransaccion(fechaDevolucion, cantidad, clienteAux, libroAux);
             attributes.addFlashAttribute("exito-name", "El prestamo ha sido registrado exitosamente");
         } catch (Exception e) {
+            
             attributes.addFlashAttribute("error-name", e.getMessage());
         }
         return new RedirectView("/prestamo");
     }
 
-    @PostMapping("/guardar-devolucion")
+    @PostMapping("/devolucion")
     public RedirectView guardar(@RequestParam String prestamo, @RequestParam Integer cantidad, @RequestParam String cliente, @RequestParam String libro, RedirectAttributes attributes) throws Exception {
         try {
             Cliente clienteAux = clienteServicio.obtenerCliente(cliente);
             Libro libroAux = libroServicio.obtenerLibro(libro);
-            prestamoServicio.guardarTransaccion(prestamo, cantidad, clienteAux, libroAux);
-            attributes.addFlashAttribute("exito-name", "El prestamo ha sido registrado exitosamente");
+            Prestamo prestamoAux = prestamoServicio.obtenerPrestamo(prestamo);
+            prestamoServicio.guardarTransaccion(prestamoAux, cantidad, clienteAux, libroAux);
+            attributes.addFlashAttribute("exito-name", "La devolución fue realizada exitosamente");
         } catch (Exception e) {
             attributes.addFlashAttribute("error-name", e.getMessage());
         }

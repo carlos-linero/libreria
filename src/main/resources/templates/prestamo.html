@@ -36,7 +36,7 @@
                             <a class="nav-link" th:href="@{/cliente}">Cliente</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/prestamo}">prestamo</a>
+                            <a class="nav-link" th:href="@{/prestamo}">Prestamo</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" aria-current="page" th:href="@{/libro}">Libro</a>
@@ -62,7 +62,7 @@
     <div th:if="${prestamos.isEmpty()}" class="text-center">
         <div th:if="${clientes.isEmpty()} or ${libros.isEmpty()}">
             <h4>No hay ningún prestamo registrado</h4>
-            <h5>Para poder realizar un prestamo primero debes tener al menos un cliente y una libro registrado</h5>
+            <h5>Para poder realizar un prestamo primero debes tener al menos un cliente y un libro registrado</h5>
         </div>
         <div th:unless="${clientes.isEmpty()} or ${libros.isEmpty()}">
             <h5>No hay ningún prestamo registrado</h5>
@@ -122,7 +122,7 @@
         </div>
     </main>
 
-    <!-- Editar Libro -->
+    <!-- Editar Prestamo -->
     <div th:each="prestamo : ${prestamos}">
         <div class="modal fade" th:attr="id=|modificar${prestamo.id}|" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -137,10 +137,13 @@
                                 th:action="@{prestamo/devolucion}" novalidate>
 
                                 <label>Cantidad a devolver</label>
-                                <input class="form-control" type="number" name="cantidad" value="0" required>
-
+                                <input class="form-control" type="number" name="cantidad" value="0" aria-describedby="isbnAyuda" required>
+                                <div id="isbnAyuda" class="form-text" th:text="|Actualmente posee '${prestamo.cantidad}' ejemplar/es|">
+                                </div>
                                 <div class="invalid-feedback">creo que se te olvido algo :(</div>
-
+                                <input type="hidden" th:attr="value=${prestamo.id}" name="prestamo">
+                                <input type="hidden" th:attr="value=${prestamo.cliente.id}" name="cliente">
+                                <input type="hidden" th:attr="value=${prestamo.libro.id}" name="libro">
                                 <hr class="my-4">
                                 <div class="modal-dialog-centered justify-content-center">
                                     <button type="submit" class="btn no-btn">Realizar devolución</button>
@@ -198,7 +201,7 @@
                             <br>
 
 
-                            <label>Fecha de </label> <br>
+                            <label>Fecha de devolución</label> <br>
                             <input class="form-control" type="date" name="fechaDevolucion" required>
                             <div class="invalid-feedback">creo que se te olvido algo :(</div>
                             <br>

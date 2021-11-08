@@ -15,4 +15,7 @@ public interface PrestamoRepositorio extends JpaRepository<Prestamo, String> {
 
     @Query("SELECT p FROM Prestamo p WHERE p.estado = :estado")
     public List<Prestamo> findAll(@Param("estado") Boolean estado);
+    
+    @Query("SELECT count(p) FROM Prestamo p WHERE p.cliente.id = :id and p.estado = true")
+    public Long cantidadPrestamo(@Param("id") String id);
 }

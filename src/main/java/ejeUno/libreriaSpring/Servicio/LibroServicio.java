@@ -106,8 +106,10 @@ public class LibroServicio implements ValidacionInterface {
             Libro libro = libroRepositorio.findById(id).get();
             if (libro.getEstado() == false) {
                 validaIsbn(libro.getIsbn(), libroRepositorio.obtenerLibroxIsbn(libro.getIsbn()));
+            }else if (libro.getEstado() == true) {
+                validaPrestados(libro.getEjemplaresPrestados());
             }
-
+            
             estado = (estado) ? false : true;
 
             libro.setEstado(estado);

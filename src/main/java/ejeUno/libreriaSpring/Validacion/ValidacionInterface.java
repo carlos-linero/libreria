@@ -1,6 +1,7 @@
 package ejeUno.libreriaSpring.Validacion;
 
 import ejeUno.libreriaSpring.Excepciones.MiExcepcion;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
@@ -136,12 +137,12 @@ public interface ValidacionInterface {
                 throw new MiExcepcion("Cantidad total sin declarar");
             } else if (cantTransaccion == 0) {
                 throw new MiExcepcion("Valor de transaccion no puede ser cero");
-            }else if (cantTransaccion < 0) {
+            } else if (cantTransaccion < 0) {
                 throw new MiExcepcion("Valor de transaccion no puede ser negativo");
-            }else if (cantTransaccion > cantTotal) {
-                throw new MiExcepcion("Cantidad supera a la cantidad total de ejemplares");
+            } else if (cantTransaccion > cantTotal) {
+                throw new MiExcepcion("Cantidad supera el total de ejemplares");
             } else if (cantTransaccion > cantActual) {
-                throw new MiExcepcion("Cantidad supera a la cantidad maxima de la transaccion");
+                throw new MiExcepcion("Cantidad supera el maximo para esta transaccion");
             }
         } catch (MiExcepcion es) {
             throw es;
@@ -180,17 +181,49 @@ public interface ValidacionInterface {
         }
     }
 
-    default void validaFechaDevolucion(LocalDateTime fechaDevolucion) throws MiExcepcion {
+    default void validaFechaDevolucion(LocalDate fechaDevolucion) throws MiExcepcion {
         try {
-            LocalDateTime actual = LocalDateTime.now();
+            LocalDate actual = LocalDate.now();
             if (fechaDevolucion == null) {
                 throw new MiExcepcion("La fecha de devolucion no fue cargada");
             } else if (fechaDevolucion.isEqual(actual)) {
                 throw new MiExcepcion("La fecha de devolucion no puede ser la misma que la actual");
             } else if (fechaDevolucion.isBefore(actual)) {
                 throw new MiExcepcion("Marty McFly eres tu?");
-            } else if (fechaDevolucion.isAfter(actual.plusYears(1).plusDays(1))) {
+            } else if (fechaDevolucion.isAfter(actual.plusYears(1))) {
                 throw new MiExcepcion("El tiempo maximo de prestamo es de un año");
+            }
+
+        } catch (MiExcepcion es) {
+            throw es;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    default void validaPrestados(Integer cantidad) throws MiExcepcion {
+        try {
+            LocalDate actual = LocalDate.now();
+            if (cantidad == null) {
+                throw new MiExcepcion("Error al identificar cantidad de libros prestados");
+            } else if (cantidad > 0) {
+                throw new MiExcepcion("Quedan ejemplares sin regresar");
+            }
+
+        } catch (MiExcepcion es) {
+            throw es;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    
+        default void validaPrestados(Long cantidad) throws MiExcepcion {
+        try {
+            LocalDate actual = LocalDate.now();
+            if (cantidad == null) {
+                throw new MiExcepcion("Error al identificar cantidad de libros prestados");
+            } else if (cantidad > 0) {
+                throw new MiExcepcion("Quedan ejemplares sin regresar");
             }
 
         } catch (MiExcepcion es) {

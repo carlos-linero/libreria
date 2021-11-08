@@ -22,7 +22,9 @@ public class Libro {
     private Integer anio;
     @Column(nullable = false)
     private Integer ejemplares;
+    @Column(nullable = false)
     private Integer ejemplaresPrestados;
+    @Column(nullable = false)
     private Integer ejemplaresRestantes;
     @Column(nullable = false)
     private Boolean estado;
