@@ -142,6 +142,7 @@
             </table>
         </div>
     </main>
+    
     <!-- editar Cliente -->
     <div th:each="cliente : ${clientes}">
         <div class="modal fade" th:attr="id=|modificar${cliente.id}|" tabindex="-1" aria-hidden="true">
@@ -189,6 +190,7 @@
                 </div>
             </div>
         </div>
+
         <!-- habilitar/deshabilitar Cliente -->
         <div class="modal fade" th:attr="id=|habilitarDeshabilitar${cliente.id}|" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -212,6 +214,7 @@
                 </div>
             </div>
         </div>
+
         <!-- Datos Personales cliente -->
         <div class="modal fade" th:attr="id=|datos${cliente.id}|" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -282,6 +285,7 @@
         </div>
 
     </div>
+
     <!-- agregar cliente -->
     <div class="modal fade" id="agregarCliente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">

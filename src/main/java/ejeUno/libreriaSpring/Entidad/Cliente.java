@@ -5,6 +5,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -24,6 +26,9 @@ public class Cliente {
     private String telefono;
     @Column(nullable = false)
     private Boolean estado;
+    @OneToOne
+    //@JoinColumn(nullable = false)
+    private Usuario usuario;
 
     public Cliente() {
     }
@@ -38,10 +43,6 @@ public class Cliente {
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public Long getDocumento() {
@@ -83,8 +84,16 @@ public class Cliente {
     public void setEstado(Boolean estado) {
         this.estado = estado;
     }
-    
-        public static Comparator<Cliente> compararNombre = new Comparator<Cliente>() {
+
+    public static Comparator<Cliente> getCompararNombre() {
+        return compararNombre;
+    }
+
+    public static void setCompararNombre(Comparator<Cliente> compararNombre) {
+        Cliente.compararNombre = compararNombre;
+    }
+
+    public static Comparator<Cliente> compararNombre = new Comparator<Cliente>() {
         @Override
         public int compare(Cliente c1, Cliente c2) {
             return c1.getNombre().compareToIgnoreCase(c2.getNombre());
