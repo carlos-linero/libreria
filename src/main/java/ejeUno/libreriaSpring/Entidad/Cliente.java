@@ -16,33 +16,39 @@ public class Cliente {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
-    @Column(nullable = false)
+
     private Long documento;
-    @Column(nullable = false)
+
     private String nombre;
-    @Column(nullable = false)
+
     private String apellido;
-    @Column(nullable = false)
+
     private String telefono;
     @Column(nullable = false)
     private Boolean estado;
     @OneToOne
-    //@JoinColumn(nullable = false)
+    @JoinColumn(nullable = false)
     private Usuario usuario;
 
     public Cliente() {
     }
 
-    public Cliente(Long documento, String nombre, String apellido, String telefono, Boolean estado) {
+    public Cliente(String id, Long documento, String nombre, String apellido, String telefono, Boolean estado, Usuario usuario) {
+        this.id = id;
         this.documento = documento;
         this.nombre = nombre;
         this.apellido = apellido;
         this.telefono = telefono;
         this.estado = estado;
+        this.usuario = usuario;
     }
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Long getDocumento() {
@@ -83,6 +89,14 @@ public class Cliente {
 
     public void setEstado(Boolean estado) {
         this.estado = estado;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public static Comparator<Cliente> getCompararNombre() {

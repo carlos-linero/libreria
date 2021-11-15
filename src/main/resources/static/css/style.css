@@ -21,7 +21,7 @@ th {
   text-transform: uppercase;
 }
 .modal-content {
-  background-color: rgb(17,19,21, 0.3);
+  background-color: rgba(65, 108, 151, 0.4);
   color: white;
 }
 .no-btn{

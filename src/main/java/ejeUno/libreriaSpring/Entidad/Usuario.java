@@ -19,6 +19,8 @@ public class Usuario {
     private String correo;
     @Column(nullable = false)
     private String clave;
+    @Column(nullable = false)
+    private Boolean estado;
     @ManyToOne
     @JoinColumn(nullable = false)
     private Rol rol;
@@ -26,10 +28,11 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(String id, String correo, String clave, Rol rol) {
+    public Usuario(String id, String correo, String clave, Boolean estado, Rol rol) {
         this.id = id;
         this.correo = correo;
         this.clave = clave;
+        this.estado = estado;
         this.rol = rol;
     }
 
@@ -57,6 +60,14 @@ public class Usuario {
         this.clave = clave;
     }
 
+    public Boolean getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Boolean estado) {
+        this.estado = estado;
+    }
+
     public Rol getRol() {
         return rol;
     }
@@ -64,5 +75,4 @@ public class Usuario {
     public void setRol(Rol rol) {
         this.rol = rol;
     }
-
 }

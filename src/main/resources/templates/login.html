@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIBRERIA</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/923eec1284.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/inicio}">Egg-Book</a>
+            <ul class="navbar-nav justify-content-end">
+                <li class="nav-item col-12 col-lg-6">
+
+                    <a title="Registrar Usuario" data-bs-toggle="modal" class="btn nav-link"
+                        data-bs-target="#agregarUsuario">Registrar Usuario</a>
+
+                </li>
+                <li class="nav-item col-12 col-lg-7">
+
+                    <a title="Registrar Administrador" data-bs-toggle="modal" class="btn nav-link"
+                        data-bs-target="#agregarAdministrador">Registrar Administrador</a>
+
+                </li>
+            </ul>
+    </nav>
+    <div th:if="${roles.isEmpty()}" class="text-center">
+        <h5>Los roles no se encuentran configurados</h5>
+
+        <form method="POST" enctype="multipart/form-data" th:action="@{/rol/guardar}">
+            <div class="modal-footer justify-content-center">
+                <button title="Configurar Roles" type="submit" class="btn no-btn">Configurar Roles</button>
+            </div>
+        </form>
+
+    </div>
+    <div class=" container-fluid">
+        <div class="row justify-content-center">
+            <div class="alert alert-secondary alert-dismissible fade show text-center col-5 tooltip" role="alert"
+                th:if="${exito != null}">
+                <strong th:text="${exito}"></strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div class="alert alert-warning alert-dismissible fade show text-center col-5 tooltip" role="alert"
+                th:if="${error != null}">
+                <strong th:text="${error}"></strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div class="alert alert-warning alert-dismissible fade show text-center col-5 tooltip" role="alert"
+                th:if="${errorLog != null}">
+                <strong th:text="${errorLog}"></strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div class="alert alert-warning alert-dismissible fade show text-center col-5 tooltip" role="alert"
+                th:if="${logout != null}">
+                <strong th:text="${logout}"></strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <main th:unless="${roles.isEmpty()}" class="container  my-5 pb-5">
+        <div class="row">
+            <div class="col-12 col-lg-7 align-self-center">
+                <h2 class="display-5 fw-bold">Bienvenido</h2>
+                <p class="col-md-8 fs-4">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum reprehenderit
+                    eaque quia eius quis,
+                    unde sed eos cupiditate asperiores dolor tempora earum ab harum libero velit, beatae eligendi atque.</p>
+            </div>
+            <div class="col-12 col-lg-5 align-self-center">
+                    <form class="needs-validation" method="POST" enctype="multipart/form-data"
+                        th:action="@{/logincheck}" novalidate>
+                        <div class="col-12 col-md-9">
+                            <label class="col-12">E-Mail</label>
+                            <input class="form-control my-2" type="email" name="correo" placeholder="ejemplo@doe.com"
+                                required>
+                            <div class="invalid-feedback col-12">creo que se te olvido algo :(</div>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <label class="col-12">Contraseña</label>
+                            <input class="form-control col-6 my-2" type="password" name="clave" placeholder="********"
+                                required>
+
+                            <div class="invalid-feedback col-12">creo que se te olvido algo :(</div>
+                        </div>
+                        <div class="text-center mt-3 col-12 col-md-9">
+                            <button type="submit" class="btn no-btn">Log In</button>
+                        </div>
+                    </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- agregar usuario -->
+    <div class="modal fade" id="agregarUsuario" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Registrar Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" method="POST" enctype="multipart/form-data"
+                        th:action="@{/usuario/guardar-usuario}" novalidate>
+
+                        <label class="col-12">E-Mail</label>
+                        <input class="form-control col-12" type="email" name="correo" placeholder="ejemplo@doe.com"
+                            required>
+                        <div class="invalid-feedback col-12">creo que se te olvido algo :(</div>
+
+
+                        <label class="col-12">Contraseña</label>
+                        <input class="form-control col-12" type="password" name="clave" placeholder="Clave123"
+                            aria-describedby="claveAyuda" required>
+                        <div id="claveAyuda" class="form-text">
+                            La clave debe tener 8 digitos, al menos una letra mayuscula y dos numeros y definitivamente
+                            no puede ser Clave123
+                        </div>
+                        <div class="invalid-feedback col-12">creo que se te olvido algo :(</div>
+
+                        <div class="modal-footer justify-content-center">
+                            <button type="submit" class="btn no-btn">Registrar Usuario</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- agregar administrador -->
+    <div class="modal fade" id="agregarAdministrador" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Registrar Administrador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" method="POST" enctype="multipart/form-data"
+                        th:action="@{/usuario/guardar-admin}" novalidate>
+
+                        <label class="col-12">E-Mail</label>
+                        <input class="form-control col-12" type="email" name="correo" placeholder="ejemplo@doe.com"
+                            required>
+                        <div class="invalid-feedback col-12">creo que se te olvido algo :(</div>
+
+
+                        <label class="col-12">Contraseña</label>
+                        <input class="form-control col-12" type="password" name="clave" placeholder="Clave123"
+                            aria-describedby="claveAyuda" required>
+                        <div id="claveAyuda" class="form-text">
+                            La clave debe tener 8 digitos, al menos una letra mayuscula y dos numeros y definitivamente
+                            no puede ser Clave123
+                        </div>
+                        <div class="invalid-feedback col-12">creo que se te olvido algo :(</div>
+
+                        <label class="col-12">Validacion de administrador</label>
+                        <input class="form-control col-12" type="password" name="adminPass" placeholder="admin123"
+                            aria-describedby="tokenAyuda" required>
+                        <div id="tokenAyuda" class="form-text">
+                            Si enserio es admin123 :)
+                        </div>
+                        <div class="invalid-feedback col-12">creo que se te olvido algo :(</div>
+
+                        <div class="modal-footer justify-content-center ">
+                            <button type="submit" class="btn no-btn">Registrar Administrador</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="fixed-bottom container-fluid text-center"><span>© Carlos Linero</span></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <script>
+        (function () {
+            'use strict'
+
+
+            var forms = document.querySelectorAll('.needs-validation')
+
+
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()</script>
+</body>
+
+</html>

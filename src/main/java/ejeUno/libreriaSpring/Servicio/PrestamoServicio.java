@@ -26,13 +26,13 @@ public class PrestamoServicio implements ValidacionInterface {
     @Transactional
     public void guardarTransaccion(LocalDate fechaDevolucion, Integer cantidad, Cliente cliente, Libro libro) throws Exception, MiExcepcion {
         try {
-            validaFechaDevolucion(fechaDevolucion);
-            validaPresencia(cantidad, "cantidad");
-            validaPresencia(cliente, "cliente");
-            validaPresencia(libro, "libro");
-            validaEstado(cliente.getEstado(), "Cliente");
-            validaEstado(libro.getEstado(), "Libro");
-            validaTransaccion(cantidad, libro.getEjemplaresRestantes(), libro.getEjemplares());
+            validacionFechaDevolucion(fechaDevolucion);
+            validacionPresencia(cantidad, "cantidad");
+            validacionPresencia(cliente, "cliente");
+            validacionPresencia(libro, "libro");
+            validacionEstado(cliente.getEstado(), "Cliente");
+            validacionEstado(libro.getEstado(), "Libro");
+            validacionTransaccion(cantidad, libro.getEjemplaresRestantes(), libro.getEjemplares());
 
             libro.setEjemplaresPrestados(libro.getEjemplaresPrestados() + cantidad);
             libro.setEjemplaresRestantes(Math.abs(libro.getEjemplares() - libro.getEjemplaresPrestados()));
@@ -64,13 +64,13 @@ public class PrestamoServicio implements ValidacionInterface {
     @Transactional
     public void guardarTransaccion(Prestamo prestamo, Integer cantidad, Cliente cliente, Libro libro) throws Exception, MiExcepcion {
         try {
-            validaPresencia(cantidad, "cantidad");
-            validaPresencia(cliente, "Cliente");
-            validaPresencia(libro, "Libro");
-            validaEstado(cliente.getEstado(), "Cliente");
-            validaEstado(libro.getEstado(), "Libro");
-            validaEstado(prestamo.getEstado(), "Prestamo");
-            validaTransaccion(cantidad, prestamo.getCantidad(), libro.getEjemplares());
+            validacionPresencia(cantidad, "cantidad");
+            validacionPresencia(cliente, "Cliente");
+            validacionPresencia(libro, "Libro");
+            validacionEstado(cliente.getEstado(), "Cliente");
+            validacionEstado(libro.getEstado(), "Libro");
+            validacionEstado(prestamo.getEstado(), "Prestamo");
+            validacionTransaccion(cantidad, prestamo.getCantidad(), libro.getEjemplares());
 
             libro.setEjemplaresPrestados(Math.abs(libro.getEjemplaresPrestados() - cantidad));
             libro.setEjemplaresRestantes(Math.abs(libro.getEjemplares() - libro.getEjemplaresPrestados()));
@@ -104,7 +104,7 @@ public class PrestamoServicio implements ValidacionInterface {
         try {
             
             Optional<Prestamo> respuesta = prestamoRepositorio.findById(id);
-            validaPresencia(respuesta, "Prestamo");
+            validacionPresencia(respuesta, "Prestamo");
             return prestamoRepositorio.findById(id).get();
         } catch (Exception e) {
             throw e;

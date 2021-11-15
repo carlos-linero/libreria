@@ -38,8 +38,8 @@ public class AutorServicio implements ValidacionInterface {
         try {
             Optional<Autor> respuesta = autorRepositorio.findById(id);
 
-            validaPresencia(respuesta, "Autor");
-            validaPresencia(estado, "'Alta'");
+            validacionPresencia(respuesta, "Autor");
+            validacionPresencia(estado, "'Alta'");
 
             Autor autor = autorRepositorio.findById(id).get();
             estado = (estado) ? false : true;
@@ -57,11 +57,11 @@ public class AutorServicio implements ValidacionInterface {
     @Transactional
     public void modificarAutor(String id, String nombre, Boolean estado) throws Exception, MiExcepcion {
         try {
-            validaEstado(estado, "Autor");
+            validacionEstado(estado, "Autor");
             Optional<Autor> respuesta = autorRepositorio.findById(id);
 
             validacionNombrePersona(nombre);
-            validaPresencia(respuesta, "Autor");
+            validacionPresencia(respuesta, "Autor");
 
             Autor autor = autorRepositorio.findById(id).get();
             autor.setNombre(nombre);
@@ -78,10 +78,8 @@ public class AutorServicio implements ValidacionInterface {
     public Autor obtenerAutor(String id) throws Exception {
         try {
             //return autorRepositorio.obtenerAutores(true);
-            Optional<Autor> respuesta = autorRepositorio.findById(id);
-            validaPresencia(respuesta, "Autor");
-            Autor autor = autorRepositorio.findById(id).get();
-            validaEstado(autor.getEstado(), "Autor");
+            Autor autor = autorRepositorio.findById(id).orElseThrow(() -> new MiExcepcion("Autor no registrado"));
+            validacionEstado(autor.getEstado(), "Autor");
             return autor;
         } catch (Exception e) {
             throw e;

@@ -20,7 +20,7 @@ public class EditorialServicio implements ValidacionInterface {
     public void crearEditorial(String nombre) throws Exception, MiExcepcion {
         try {
             Editorial editorial = new Editorial();
-            validacionNombre(nombre);
+            validacionNombre(nombre, "Titulo");
 
             editorial.setNombre(nombre);
             editorial.setEstado(true);
@@ -37,8 +37,8 @@ public class EditorialServicio implements ValidacionInterface {
     public void modificarEditorial(String id, Boolean estado) throws Exception, MiExcepcion {
         try {
             Optional<Editorial> respuesta = editorialRepositorio.findById(id);
-            validaPresencia(respuesta, "Editorial");
-            validaPresencia(estado, "'Alta'");
+            validacionPresencia(respuesta, "Editorial");
+            validacionPresencia(estado, "'Alta'");
 
             Editorial editorial = editorialRepositorio.findById(id).get();
             estado = (estado) ? false : true;
@@ -56,11 +56,11 @@ public class EditorialServicio implements ValidacionInterface {
     @Transactional
     public void modificarEditorial(String id, String nombre, Boolean estado) throws Exception, MiExcepcion {
         try {
-            validaEstado(estado, "Editorial");
+            validacionEstado(estado, "Editorial");
             Optional<Editorial> respuesta = editorialRepositorio.findById(id);
 
             validacionNombrePersona(nombre);
-            validaPresencia(respuesta, "Editorial");
+            validacionPresencia(respuesta, "Editorial");
 
             Editorial editorial = editorialRepositorio.findById(id).get();
             editorial.setNombre(nombre);
@@ -78,7 +78,7 @@ public class EditorialServicio implements ValidacionInterface {
         try {
             //return autorRepositorio.obtenerAutores(true);
             Optional<Editorial> respuesta = editorialRepositorio.findById(id);
-            validaPresencia(respuesta, "Editorial");
+            validacionPresencia(respuesta, "Editorial");
             return editorialRepositorio.findById(id).get();
         } catch (Exception e) {
             throw e;

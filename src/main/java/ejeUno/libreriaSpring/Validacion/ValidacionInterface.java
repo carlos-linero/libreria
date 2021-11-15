@@ -2,11 +2,8 @@ package ejeUno.libreriaSpring.Validacion;
 
 import ejeUno.libreriaSpring.Excepciones.MiExcepcion;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 public interface ValidacionInterface {
 
@@ -26,7 +23,7 @@ public interface ValidacionInterface {
         }
     }
 
-    default void validaPresencia(Optional respuesta, String nombreObjeto) throws MiExcepcion {
+    default void validacionPresencia(Optional respuesta, String nombreObjeto) throws MiExcepcion {
         try {
             if (!respuesta.isPresent()) {
                 throw new MiExcepcion(nombreObjeto + " seleccionado no existe");
@@ -38,7 +35,7 @@ public interface ValidacionInterface {
         }
     }
 
-    default void validaPresencia(Object entity, String nombreObjeto) throws MiExcepcion {
+    default void validacionPresencia(Object entity, String nombreObjeto) throws MiExcepcion {
         try {
             if (entity == null) {
                 throw new MiExcepcion("Error al identificar " + nombreObjeto);
@@ -50,14 +47,14 @@ public interface ValidacionInterface {
         }
     }
 
-    default void validacionNombre(String nombre) throws MiExcepcion {
+    default void validacionNombre(String nombre, String tipo) throws MiExcepcion {
         try {
             if (nombre == null) {
                 throw new MiExcepcion("Valor vacio");
             } else if (nombre.trim().isEmpty()) {
-                throw new MiExcepcion("Nombre invalido, no puede estar en blanco");
+                throw new MiExcepcion(tipo + " invalido, no puede estar en blanco");
             } else if (nombre.length() < 0) {
-                throw new MiExcepcion("Nombre invalido, debe tener mas de una letra");
+                throw new MiExcepcion(tipo + " invalido, debe tener mas de un caracter");
             }
         } catch (MiExcepcion es) {
             throw es;
@@ -83,7 +80,7 @@ public interface ValidacionInterface {
         }
     }
 
-    default void validaCantidadEjemplar(Integer ejemplares) throws MiExcepcion {
+    default void validacionCantidadEjemplar(Integer ejemplares) throws MiExcepcion {
         try {
             if (ejemplares == null) {
                 throw new MiExcepcion("Valor sin declarar");
@@ -97,7 +94,7 @@ public interface ValidacionInterface {
         }
     }
 
-    default void validaIsbn(Long isbn, Long cant) throws MiExcepcion {
+    default void validacionIsbn(Long isbn, Long cant) throws MiExcepcion {
         try {
             if (isbn == null) {
                 throw new MiExcepcion("Valor sin declarar");
@@ -113,7 +110,7 @@ public interface ValidacionInterface {
         }
     }
 
-    default void validaEstado(Boolean estado, String tipo) throws MiExcepcion {
+    default void validacionEstado(Boolean estado, String tipo) throws MiExcepcion {
         try {
             if (estado == null) {
                 throw new MiExcepcion("Error, no se espcifica si esta habilitado o deshabilitado");
@@ -127,7 +124,7 @@ public interface ValidacionInterface {
         }
     }
 
-    default void validaTransaccion(Integer cantTransaccion, Integer cantActual, Integer cantTotal) throws MiExcepcion {
+    default void validacionTransaccion(Integer cantTransaccion, Integer cantActual, Integer cantTotal) throws MiExcepcion {
         try {
             if (cantTransaccion == null) {
                 throw new MiExcepcion("Cantidad de transaccion sin declarar");
@@ -151,7 +148,7 @@ public interface ValidacionInterface {
         }
     }
 
-    default void validaDocumento(Long documento) throws MiExcepcion {
+    default void validacionDocumento(Long documento) throws MiExcepcion {
         try {
             if (documento == null) {
                 throw new MiExcepcion("Documento no fue cargado");
@@ -167,7 +164,7 @@ public interface ValidacionInterface {
         }
     }
 
-    default void validaTelefono(String telefono) throws MiExcepcion {
+    default void validacionTelefono(String telefono) throws MiExcepcion {
         try {
             if (telefono == null) {
                 throw new MiExcepcion("Telefono no fue cargado");
@@ -181,7 +178,7 @@ public interface ValidacionInterface {
         }
     }
 
-    default void validaFechaDevolucion(LocalDate fechaDevolucion) throws MiExcepcion {
+    default void validacionFechaDevolucion(LocalDate fechaDevolucion) throws MiExcepcion {
         try {
             LocalDate actual = LocalDate.now();
             if (fechaDevolucion == null) {
@@ -201,7 +198,22 @@ public interface ValidacionInterface {
         }
     }
 
-    default void validaPrestados(Integer cantidad) throws MiExcepcion {
+    default void validacionPrestados(Integer cantidad) throws MiExcepcion {
+        try {
+            if (cantidad == null) {
+                throw new MiExcepcion("Error al identificar cantidad de libros prestados");
+            } else if (cantidad > 0) {
+                throw new MiExcepcion("Quedan ejemplares sin regresar");
+            }
+
+        } catch (MiExcepcion es) {
+            throw es;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    default void validacionPrestados(Long cantidad) throws MiExcepcion {
         try {
             LocalDate actual = LocalDate.now();
             if (cantidad == null) {
@@ -216,16 +228,18 @@ public interface ValidacionInterface {
             throw e;
         }
     }
-    
-        default void validaPrestados(Long cantidad) throws MiExcepcion {
-        try {
-            LocalDate actual = LocalDate.now();
-            if (cantidad == null) {
-                throw new MiExcepcion("Error al identificar cantidad de libros prestados");
-            } else if (cantidad > 0) {
-                throw new MiExcepcion("Quedan ejemplares sin regresar");
-            }
 
+    default void validacionClave(String clave) throws MiExcepcion {
+        try {
+            if (clave == null) {
+                throw new MiExcepcion("Campo de clave no puede estar vacio");
+            } else if (clave.trim().isEmpty()) {
+                throw new MiExcepcion("Campo de clave no puede estar en blanco");
+            } else if (clave.length() < 8) {
+                throw new MiExcepcion("Clave deebe tener al menos 8 digitos");
+            } else if (clave.equals("Clave123")) {
+                throw new MiExcepcion("Enserio? definitivamente la clave no puede ser Clave123");
+            }
         } catch (MiExcepcion es) {
             throw es;
         } catch (Exception e) {
