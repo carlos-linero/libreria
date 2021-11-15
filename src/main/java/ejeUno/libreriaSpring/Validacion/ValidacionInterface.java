@@ -238,7 +238,7 @@ public interface ValidacionInterface {
             } else if (clave.length() < 8) {
                 throw new MiExcepcion("Clave deebe tener al menos 8 digitos");
             } else if (clave.equals("Clave123")) {
-                throw new MiExcepcion("Enserio? definitivamente la clave no puede ser Clave123");
+                throw new MiExcepcion("En serio? definitivamente la clave no puede ser Clave123");
             }
         } catch (MiExcepcion es) {
             throw es;
