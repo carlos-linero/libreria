@@ -26,6 +26,7 @@ public class RolServicio implements ValidacionInterface {
             
             Rol rol = new Rol();
             rol.setNombre(rolNombre);
+            rol.setEstado(true);
             rolRepositorio.save(rol);
         } catch (MiExcepcion es) {
             throw es;

@@ -24,8 +24,8 @@ public class ClienteServicio implements ValidacionInterface {
             validacionPresencia(usuario, "Usuario");
             Cliente cliente = new Cliente();
             cliente.setUsuario(usuario);
-            cliente.setNombre("doe");
-            cliente.setApellido("doe");
+            cliente.setNombre("Jane");
+            cliente.setApellido("Doe");
             cliente.setEstado(true);
 
             clienteRepositorio.save(cliente);

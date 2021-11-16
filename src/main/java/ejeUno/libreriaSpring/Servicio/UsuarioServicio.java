@@ -7,6 +7,8 @@ import ejeUno.libreriaSpring.Repositorio.UsuarioRepositorio;
 import ejeUno.libreriaSpring.Validacion.ValidacionInterface;
 import java.util.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -58,11 +60,13 @@ public class UsuarioServicio implements UserDetailsService, ValidacionInterface 
 
             if (usuarioRepositorio.existsByCorreo(correo)) {
                 throw new MiExcepcion("Ya existe una cuenta asociada al correo: " + correo);
-            } else if (!adminPass.equalsIgnoreCase("admin123")) {
-                throw new MiExcepcion("Autenticacion de administrador invalida");
+            }
+            if (!adminPass.equalsIgnoreCase("admin123")) {
+                throw new MiExcepcion("Autenticación de administrador invalida");
             }
             Usuario usuario = new Usuario();
 
+            usuario.setEstado(true);
             usuario.setRol(rol);
             usuario.setCorreo(correo);
             usuario.setClave(encoder.encode(clave));
@@ -77,8 +81,14 @@ public class UsuarioServicio implements UserDetailsService, ValidacionInterface 
 
     @Override
     public UserDetails loadUserByUsername(String correo) throws UsernameNotFoundException {
-        Usuario usuario = usuarioRepositorio.findByCorreo(correo).orElseThrow(() -> new UsernameNotFoundException("Usuario no registrado"));
+        try {
+            Usuario usuario = usuarioRepositorio.findByCorreo(correo).orElseThrow(() -> new UsernameNotFoundException("Corre no se encuentra asociado a una cuenta"));
 
-        return new User(usuario.getCorreo(), usuario.getClave(), Collections.emptyList());
+            GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + usuario.getRol().getNombre());
+
+            return new User(usuario.getCorreo(), usuario.getClave(), Collections.singletonList(authority));
+        } catch (UsernameNotFoundException e) {
+            throw e;
+        }
     }
 }

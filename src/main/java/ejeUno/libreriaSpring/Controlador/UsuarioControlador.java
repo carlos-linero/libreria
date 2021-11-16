@@ -4,6 +4,7 @@ import ejeUno.libreriaSpring.Entidad.Rol;
 import ejeUno.libreriaSpring.Servicio.ClienteServicio;
 import ejeUno.libreriaSpring.Servicio.RolServicio;
 import ejeUno.libreriaSpring.Servicio.UsuarioServicio;
+import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,10 +27,12 @@ public class UsuarioControlador {
     private ClienteServicio clienteServicio;
 
     @PostMapping("/guardar-usuario")
-    public RedirectView guardar(@RequestParam String correo, @RequestParam String clave, RedirectAttributes attributes) throws Exception {
+    public RedirectView guardar(Principal principal, @RequestParam String correo, @RequestParam String clave, RedirectAttributes attributes) throws Exception {
         try {
-            Rol rol = rolServicio.obtenerRol("CLIENTE");
-            clienteServicio.guardarCliente(usuarioServicio.crearUsuario(rol, correo, clave));
+            if (principal != null) {
+                return new RedirectView("/login");
+            }
+            clienteServicio.guardarCliente(usuarioServicio.crearUsuario(rolServicio.obtenerRol("CLIENTE"), correo, clave));
             attributes.addFlashAttribute("exito-name", "Usuario registrado exitosamente");
         } catch (Exception e) {
             attributes.addFlashAttribute("error-name", e.getMessage());
@@ -38,10 +41,12 @@ public class UsuarioControlador {
     }
 
     @PostMapping("/guardar-admin")
-    public RedirectView guardar(@RequestParam String adminPass, @RequestParam String correo, @RequestParam String clave, RedirectAttributes attributes) throws Exception {
+    public RedirectView guardar(Principal principal, @RequestParam String adminPass, @RequestParam String correo, @RequestParam String clave, RedirectAttributes attributes) throws Exception {
         try {
-            Rol rol = rolServicio.obtenerRol("ADMIN");
-            clienteServicio.guardarCliente(usuarioServicio.crearUsuario(adminPass, rol, correo, clave));
+            if (principal != null) {
+                return new RedirectView("/login");
+            }
+            clienteServicio.guardarCliente(usuarioServicio.crearUsuario(adminPass, rolServicio.obtenerRol("ADMIN"), correo, clave));
             attributes.addFlashAttribute("exito-name", "Administrador registrado exitosamente");
         } catch (Exception e) {
             attributes.addFlashAttribute("error-name", e.getMessage());
