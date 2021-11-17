@@ -26,3 +26,9 @@ text-transform: uppercase;
 color: black;
 
 }
+footer{
+   background-color: rgb(255, 169, 88);
+}
+nav{
+  background-color: rgb(255, 169, 88, 0.3);
+}

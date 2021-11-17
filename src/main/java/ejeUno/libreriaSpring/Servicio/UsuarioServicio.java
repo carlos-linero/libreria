@@ -83,12 +83,16 @@ public class UsuarioServicio implements UserDetailsService, ValidacionInterface 
     public UserDetails loadUserByUsername(String correo) throws UsernameNotFoundException {
         try {
             Usuario usuario = usuarioRepositorio.findByCorreo(correo).orElseThrow(() -> new UsernameNotFoundException("Corre no se encuentra asociado a una cuenta"));
-
+            
+                if (usuario.getEstado() == false) {
+                    throw new UsernameNotFoundException("La cuenta no se encuentra habilitada");
+                }
+           
             GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + usuario.getRol().getNombre());
 
             return new User(usuario.getCorreo(), usuario.getClave(), Collections.singletonList(authority));
-        } catch (UsernameNotFoundException e) {
-            throw e;
+        } catch (UsernameNotFoundException es) {
+            throw es;
         }
     }
 }
