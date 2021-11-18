@@ -34,9 +34,9 @@ public class PerfilControlador {
             mav.addObject("exito", flashMap.get("exito-name"));
             mav.addObject("error", flashMap.get("error-name"));
         }
-        //Usuario usuario = UsuarioServicio.obteneUsuario((String) sesion.getAttribute("idUsuario"));
+        Usuario usuario = UsuarioServicio.obteneUsuario((String) sesion.getAttribute("idUsuario"));
    
-        Cliente cliente = clienteServicio.obtenerCliente("25b74573-77a5-4a33-b304-c7ac8d8a4e6d");
+        Cliente cliente = clienteServicio.obtenerCliente(usuario.getId(), usuario.getCorreo());
         mav.addObject("cliente", cliente);
         return mav;
     }
