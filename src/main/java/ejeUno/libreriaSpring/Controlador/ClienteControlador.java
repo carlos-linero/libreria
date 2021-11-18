@@ -40,7 +40,7 @@ public class ClienteControlador {
             mav.addObject("error", flashMap.get("error-name"));
         }
 
-        List<Cliente> clientes = clienteServicio.obtenerCliente();
+        List<Cliente> clientes = clienteServicio.obtenerClientexRol("CLIENTE");
         clientes.sort(Cliente.compararNombre);
         mav.addObject("clientes", clientes);
         return mav;
@@ -50,7 +50,7 @@ public class ClienteControlador {
     public RedirectView guardar(@RequestParam String nombre, @RequestParam String apellido, @RequestParam Long documento, @RequestParam String telefono, RedirectAttributes attributes) throws Exception {
         try {
             clienteServicio.guardarCliente(nombre, apellido, documento, telefono);
-            attributes.addFlashAttribute("exito-name", "El cliente ha sido editado exitosamente");
+            attributes.addFlashAttribute("exito-name", "El cliente ha sido registrado exitosamente");
         } catch (Exception e) {
             attributes.addFlashAttribute("error-name", e.getMessage());
         }
@@ -58,24 +58,24 @@ public class ClienteControlador {
     }
 
     @PostMapping("/modificar")
-    public RedirectView guardar(@RequestParam String nombre, @RequestParam String apellido, @RequestParam Long documento, @RequestParam String telefono, @RequestParam String id, @RequestParam Boolean estado, RedirectAttributes attributes) throws Exception {
+    public RedirectView guardar(@RequestParam String retorno, @RequestParam String nombre, @RequestParam String apellido, @RequestParam Long documento, @RequestParam String telefono, @RequestParam String id, @RequestParam Boolean estado, RedirectAttributes attributes) throws Exception {
         try {
             clienteServicio.modificarCliente(nombre, apellido, documento, telefono, id, estado);
             attributes.addFlashAttribute("exito-name", "Los datos del cliente han sido actualizados exitosamente");
         } catch (Exception e) {
             attributes.addFlashAttribute("error-name", e.getMessage());
         }
-        return new RedirectView("/cliente");
+        return new RedirectView("/"+retorno);
     }
 
     @PostMapping("/modificar-estado")
-    public RedirectView guardar(@RequestParam Boolean estado, @RequestParam String id, RedirectAttributes attributes) throws Exception {
+    public RedirectView guardar(@RequestParam String retorno, @RequestParam Boolean estado, @RequestParam String id, RedirectAttributes attributes) throws Exception {
         try {
             clienteServicio.modificarCliente(id, estado, prestamoServicio.obtenerCantidadPrestamo(id));
             attributes.addFlashAttribute("exito-name", "El cliente ha sido " + ((estado) ? "deshabilitado" : "habilitado") + " exitosamente");
         } catch (Exception e) {
             attributes.addFlashAttribute("error-name", e.getMessage());
         }
-        return new RedirectView("/cliente");
+        return new RedirectView("/"+retorno);
     }
 }

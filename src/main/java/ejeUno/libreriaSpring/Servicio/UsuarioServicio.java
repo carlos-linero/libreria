@@ -6,6 +6,7 @@ import ejeUno.libreriaSpring.Excepciones.MiExcepcion;
 import ejeUno.libreriaSpring.Repositorio.UsuarioRepositorio;
 import ejeUno.libreriaSpring.Validacion.ValidacionInterface;
 import java.util.Collections;
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,6 +17,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Service
 public class UsuarioServicio implements UserDetailsService, ValidacionInterface {
@@ -78,6 +81,19 @@ public class UsuarioServicio implements UserDetailsService, ValidacionInterface 
             throw e;
         }
     }
+    
+            @Transactional(readOnly = true)
+    public Usuario obteneUsuario(String id) throws Exception, MiExcepcion {
+        try {
+            //return autorRepositorio.obtenerAutores(true);
+            Usuario usuario = usuarioRepositorio.findById(id).orElseThrow(() -> new MiExcepcion("Error al extraer informacion del usuario"));
+            return usuario;
+        } catch (MiExcepcion es) {
+            throw es;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 
     @Override
     public UserDetails loadUserByUsername(String correo) throws UsernameNotFoundException {
@@ -90,6 +106,12 @@ public class UsuarioServicio implements UserDetailsService, ValidacionInterface 
            
             GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + usuario.getRol().getNombre());
 
+            ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+            
+            HttpSession sesion = attr.getRequest().getSession(true);
+            
+            sesion.setAttribute("idUsuario", usuario.getId());
+            
             return new User(usuario.getCorreo(), usuario.getClave(), Collections.singletonList(authority));
         } catch (UsernameNotFoundException es) {
             throw es;

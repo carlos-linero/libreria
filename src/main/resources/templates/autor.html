@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -31,7 +31,7 @@
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                        <li class="nav-item">
+                        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                             <a class="nav-link" th:href="@{/cliente}">Cliente</a>
                         </li>
                         <li class="nav-item">
@@ -47,6 +47,9 @@
                             <a class="nav-link" th:href="@{/editorial}">Editorial</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" th:href="@{/perfil}">Perfil</a>
+                        </li>
+                        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
 
                             <a title="Agregar Autor" data-bs-toggle="modal" class="btn"
                                 data-bs-target="#agregarAutor">Agregar Autor</a>
@@ -61,7 +64,7 @@
     </nav>
     <div th:if="${autores.isEmpty()}" class="text-center">
         <h5>No hay ningun Autor registrado</h5>
-        <button title="Agregar Autor" type="button" class="btn" data-bs-toggle="modal" data-bs-target="#agregarAutor">
+        <button title="Agregar Autor" type="button" class="btn" data-bs-toggle="modal" data-bs-target="#agregarAutor" sec:authorize="hasRole('ADMIN')">
             Agregar Autor
         </button>
     </div>
@@ -88,8 +91,8 @@
                     <tr>
                         <th scope="col">Nombre</th>
                         <th scope="col">Bibliografia</th>
-                        <th scope="col">Editar</th>
-                        <th scope="col">Des/Habilitar</th>
+                        <th scope="col" sec:authorize="hasRole('ADMIN')">Editar</th>
+                        <th scope="col" sec:authorize="hasRole('ADMIN')">Des/Habilitar</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -108,25 +111,26 @@
                             </button>
                         </td>
 
-                        <td th:if="${autor.estado}">
+                        <td th:if="${autor.estado}" sec:authorize="hasRole('ADMIN')">
                             <button class="btn" title="Editar" type="button" data-bs-toggle="modal"
                                 th:attr="data-bs-target=|#modificar${autor.id}|">
                                 <i class="far fa-edit"></i>
                             </button>
                         </td>
 
-                        <td th:unless="${autor.estado}">
+                        <td th:unless="${autor.estado}" sec:authorize="hasRole('ADMIN')">
                             <button disabled class="btn" title="Editar" type="button">
                                 <i class="far fa-edit"></i>
                             </button>
                         </td>
 
-                        <td th:if="${autor.estado}"><button class="btn" title="Deshabilitar" type="button"
+                        <td th:if="${autor.estado}" sec:authorize="hasRole('ADMIN')">
+                            <button class="btn" title="Deshabilitar" type="button"
                                 data-bs-toggle="modal" th:attr="data-bs-target=|#habilitarDeshabilitar${autor.id}|">
                                 <i class="far fa-minus-square"></i>
                             </button>
                         </td>
-                        <td th:unless="${autor.estado}">
+                        <td th:unless="${autor.estado}" sec:authorize="hasRole('ADMIN')">
                             <button class="btn" title="Habilitar" type="button" data-bs-toggle="modal"
                                 th:attr="data-bs-target=|#habilitarDeshabilitar${autor.id}|">
                                 <i class="far fa-plus-square"></i>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -31,7 +31,7 @@
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                        <li class="nav-item">
+                        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                             <a class="nav-link" th:href="@{/cliente}">Cliente</a>
                         </li>
                         <li class="nav-item">
@@ -45,6 +45,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" th:href="@{/editorial}">Editorial</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/perfil}">Perfil</a>
                         </li>
                         <li th:if="${clientes.isEmpty()} or ${libros.isEmpty()}" class="nav-item">
 
@@ -64,7 +67,7 @@
     <div th:if="${prestamos.isEmpty()}" class="text-center">
         <div th:if="${clientes.isEmpty()} or ${libros.isEmpty()}">
             <h4>No hay ningún prestamo registrado</h4>
-            <h5>Para poder realizar un prestamo primero debes tener al menos un cliente y un libro registrado</h5>
+            <h5>Para poder realizar un prestamo al menos tiene que haber un libro registrado</h5>
         </div>
         <div th:unless="${clientes.isEmpty()} or ${libros.isEmpty()}">
             <h5>No hay ningún prestamo registrado</h5>

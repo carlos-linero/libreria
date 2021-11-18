@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -31,7 +31,7 @@
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                        <li class="nav-item">
+                        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                             <a class="nav-link" th:href="@{/cliente}">Cliente</a>
                         </li>
                         <li class="nav-item">
@@ -46,11 +46,14 @@
                         <li class="nav-item">
                             <a class="nav-link" th:href="@{/editorial}">Editorial</a>
                         </li>
-                        <li th:if="${autores.isEmpty()} or ${editoriales.isEmpty()}" class="nav-item">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/perfil}">Perfil</a>
+                        </li>
+                        <li th:if="${autores.isEmpty()} or ${editoriales.isEmpty()}" class="nav-item" sec:authorize="hasRole('ADMIN')">
 
                             <a title="Agregar Libro" class="btn" aria-disabled="true">Agregar Libro</a>
                         </li>
-                        <li th:unless="${autores.isEmpty()} or ${editoriales.isEmpty()}" class="nav-item">
+                        <li th:unless="${autores.isEmpty()} or ${editoriales.isEmpty()}" class="nav-item" sec:authorize="hasRole('ADMIN')">
                             <a title="Agregar Libro" data-bs-toggle="modal" class="btn"
                                 data-bs-target="#agregarLibro">Agregar Libro</a>
                         </li>
@@ -64,12 +67,12 @@
     <div th:if="${libros.isEmpty()}" class="text-center">
         <div th:if="${autores.isEmpty()} or ${editoriales.isEmpty()}">
             <h4>No hay ningún libro registrado</h4>
-            <h5>Para poder agregar un libro primero debes tener al menos un autor y una editorial registrada</h5>
+            <h5 sec:authorize="hasRole('ADMIN')">Para poder agregar un libro primero debes tener al menos un autor y una editorial registrada</h5>
         </div>
         <div th:unless="${autores.isEmpty()} or ${editoriales.isEmpty()}">
             <h5>No hay ningun libro registrado</h5>
             <button title="Agregar Libro" type="button" class="btn" data-bs-toggle="modal"
-                data-bs-target="#agregarLibro">
+                data-bs-target="#agregarLibro" sec:authorize="hasRole('ADMIN')">
                 Agregar Libro
             </button>
         </div>
@@ -99,8 +102,8 @@
                         <th scope="col">Autor</th>
                         <th scope="col">Editorial</th>
                         <th scope="col">Disponible</th>
-                        <th scope="col">Editar</th>
-                        <th scope="col">Des/Habilitar</th>
+                        <th scope="col" sec:authorize="hasRole('ADMIN')">Editar</th>
+                        <th scope="col" sec:authorize="hasRole('ADMIN')">Des/Habilitar</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -112,24 +115,24 @@
                         <td th:if="${libro.estado}" th:text="${libro.ejemplaresRestantes}"></td>
                         <td th:unless="${libro.estado}" th:text="0"></td>
 
-                        <td th:if="${libro.estado}">
+                        <td th:if="${libro.estado}" sec:authorize="hasRole('ADMIN')">
                             <button class="btn" title="Editar" type="button" data-bs-toggle="modal"
                                 th:attr="data-bs-target=|#modificar${libro.id}|">
                                 <i class="far fa-edit"></i>
                             </button>
                         </td>
-                        <td th:unless="${libro.estado}">
+                        <td th:unless="${libro.estado}" sec:authorize="hasRole('ADMIN')">
                             <button disabled class="btn" title="Editar" type="button">
                                 <i class="far fa-edit"></i>
                             </button>
                         </td>
-                        <td th:if="${libro.estado}">
+                        <td th:if="${libro.estado}" sec:authorize="hasRole('ADMIN')">
                             <button class="btn" title="Deshabilitar" type="button" data-bs-toggle="modal"
                                 th:attr="data-bs-target=|#habilitarDeshabilitar${libro.id}|">
                                 <i class="far fa-minus-square"></i>
                             </button>
                         </td>
-                        <td th:unless="${libro.estado}">
+                        <td th:unless="${libro.estado}" sec:authorize="hasRole('ADMIN')">
                             <button class="btn" title="Habilitar" type="button" data-bs-toggle="modal"
                                 th:attr="data-bs-target=|#habilitarDeshabilitar${libro.id}|">
                                 <i class="far fa-plus-square"></i>

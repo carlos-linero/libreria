@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -31,7 +31,7 @@
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                        <li class="nav-item">
+                        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                             <a class="nav-link" th:href="@{/cliente}">Cliente</a>
                         </li>
                         <li class="nav-item">
@@ -47,6 +47,9 @@
                             <a class="nav-link" th:href="@{/editorial}">Editorial</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" th:href="@{/perfil}">Perfil</a>
+                        </li>
+                        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
 
                             <a title="Agregar Cliente" data-bs-toggle="modal" class="btn"
                                 data-bs-target="#agregarCliente">Agregar Cliente</a>

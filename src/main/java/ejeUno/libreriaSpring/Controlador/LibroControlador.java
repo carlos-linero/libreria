@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -71,6 +72,7 @@ public class LibroControlador {
     }
 
     @PostMapping("/guardar")
+    @PreAuthorize("hasRole('ADMIN')")
     public RedirectView guardar(@RequestParam Long isbn, @RequestParam String nombre, @RequestParam Integer anio, @RequestParam Integer Ejemplares, @RequestParam String autor, @RequestParam String editorial, RedirectAttributes attributes) throws Exception {
         try {
             Autor autorAux = autorServicio.obtenerAutor(autor);
@@ -84,6 +86,7 @@ public class LibroControlador {
     }
 
     @PostMapping("/editar")
+    @PreAuthorize("hasRole('ADMIN')")
     public RedirectView guardar(@RequestParam String editorial, @RequestParam String autor, @RequestParam Long isbn, @RequestParam String nombre, @RequestParam Integer anio, @RequestParam Integer Ejemplares, @RequestParam String id, @RequestParam Boolean estado, RedirectAttributes attributes) throws Exception {
         try {
             Editorial editorialAux = editorialServicio.obtenerEditorial(editorial);
@@ -97,6 +100,7 @@ public class LibroControlador {
     }
 
     @PostMapping("/modificar-estado")
+    @PreAuthorize("hasRole('ADMIN')")
     public RedirectView guardar(@RequestParam Boolean estado, @RequestParam String id, RedirectAttributes attributes) throws Exception {
         try {
             libroServicio.modificarLibro(id, estado);

@@ -54,8 +54,8 @@ public class PrestamoControlador {
         return mav;
 
     }
-    
-        @GetMapping("/historial/{estado}/{id}/{name}/{lastn}")
+
+    @GetMapping("/historial/{estado}/{id}/{name}/{lastn}")
     public ModelAndView historialPrestamo(@PathVariable Boolean estado, @PathVariable String id, @PathVariable String name, @PathVariable String lastn) throws MiExcepcion, Exception {
 
         try {
@@ -82,7 +82,7 @@ public class PrestamoControlador {
             prestamoServicio.guardarTransaccion(fechaDevolucion, cantidad, clienteAux, libroAux);
             attributes.addFlashAttribute("exito-name", "El prestamo ha sido registrado exitosamente");
         } catch (Exception e) {
-            
+
             attributes.addFlashAttribute("error-name", e.getMessage());
         }
         return new RedirectView("/prestamo");

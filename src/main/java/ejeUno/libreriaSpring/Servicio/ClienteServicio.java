@@ -67,12 +67,12 @@ public class ClienteServicio implements ValidacionInterface {
             validacionPresencia(estado, "'Alta'");
 
             Cliente cliente = clienteRepositorio.findById(id).get();
-            if (cliente.getEstado() == true) {
+            if (cliente.getUsuario().getEstado() == true) {
                 validacionPrestados(cantidad);
             }
             estado = (estado) ? false : true;
 
-            cliente.setEstado(estado);
+            cliente.getUsuario().setEstado(estado);
 
             clienteRepositorio.save(cliente);
         } catch (MiExcepcion es) {
@@ -118,12 +118,38 @@ public class ClienteServicio implements ValidacionInterface {
             throw e;
         }
     }
+        @Transactional(readOnly = true)
+    public Cliente obtenerCliente(String id, String correo) throws Exception, MiExcepcion {
+        try {
+            //return autorRepositorio.obtenerAutores(true);
+            Optional<Cliente> aux = clienteRepositorio.obtenerPerfil(id, correo);
+            if (!aux.isPresent()) {
+                throw new MiExcepcion("Perfil no encontrado");
+            }
+            Cliente cliente = clienteRepositorio.obtenerPerfil(id, correo).get();
+            return cliente;
+        } catch (MiExcepcion es) {
+            throw es;
+        } catch (Exception e) { 
+            throw e;
+        }
+    }
 
     @Transactional(readOnly = true)
     public List<Cliente> obtenerCliente() throws Exception {
         try {
             //return autorRepositorio.obtenerAutores(true);
             return clienteRepositorio.findAll();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    
+        @Transactional(readOnly = true)
+    public List<Cliente> obtenerClientexRol(String rol) throws Exception {
+        try {
+            //return autorRepositorio.obtenerAutores(true);
+            return clienteRepositorio.obtenerClientexRol(rol);
         } catch (Exception e) {
             throw e;
         }

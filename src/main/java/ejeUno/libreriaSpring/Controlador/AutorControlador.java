@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,6 +55,7 @@ public class AutorControlador {
         }
     }*/
     @PostMapping("/guardar")
+    @PreAuthorize("hasRole('ADMIN')")
     public RedirectView guardar(@RequestParam String nombre, RedirectAttributes attributes) throws Exception {
         try {
             autorServicio.crearAutor(nombre);
@@ -65,6 +67,7 @@ public class AutorControlador {
     }
 
     @PostMapping("/modificar-nombre")
+    @PreAuthorize("hasRole('ADMIN')")
     public RedirectView guardar(@RequestParam String nombre, @RequestParam Boolean estado, @RequestParam String id, RedirectAttributes attributes) throws Exception {
         try {
             autorServicio.modificarAutor(id, nombre, estado);
@@ -76,6 +79,7 @@ public class AutorControlador {
     }
 
     @PostMapping("/modificar-estado")
+    @PreAuthorize("hasRole('ADMIN')")
     public RedirectView guardar(@RequestParam Boolean estado, @RequestParam String id, RedirectAttributes attributes) throws Exception {
         try {
             autorServicio.modificarAutor(id, estado);
