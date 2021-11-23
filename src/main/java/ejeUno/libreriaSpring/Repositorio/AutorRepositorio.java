@@ -11,6 +11,5 @@ import org.springframework.data.repository.query.Param;
 @Repository
 public interface AutorRepositorio extends JpaRepository<Autor, String>{
     
-    @Query("SELECT a FROM Autor a WHERE a.estado = :estado")
-    public List<Autor> obtenerAutores(@Param("estado") Boolean estado);
+ List<Autor> findByEstado(Boolean estado);
 }

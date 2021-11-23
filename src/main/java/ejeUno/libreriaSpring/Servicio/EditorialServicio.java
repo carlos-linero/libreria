@@ -84,6 +84,17 @@ public class EditorialServicio implements ValidacionInterface {
             throw e;
         }
     }
+    
+        @Transactional(readOnly = true)
+    public List<Editorial> obtenerEditorial(Boolean estado) throws Exception, MiExcepcion {
+        try {
+            //return autorRepositorio.obtenerAutores(true);
+            List<Editorial> editorial = editorialRepositorio.findByEstado(estado); 
+            return editorial;
+        }catch (Exception e) {
+            throw e;
+        }
+    }
 
     @Transactional(readOnly = true)
     public List<Editorial> obtenerEditorial() throws Exception {

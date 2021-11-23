@@ -5,11 +5,13 @@ import ejeUno.libreriaSpring.Entidad.Editorial;
 import ejeUno.libreriaSpring.Entidad.Libro;
 import ejeUno.libreriaSpring.Excepciones.MiExcepcion;
 import ejeUno.libreriaSpring.Servicio.AutorServicio;
+import ejeUno.libreriaSpring.Servicio.ClienteServicio;
 import ejeUno.libreriaSpring.Servicio.EditorialServicio;
 import ejeUno.libreriaSpring.Servicio.LibroServicio;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -33,9 +35,11 @@ public class LibroControlador {
     private AutorServicio autorServicio;
     @Autowired
     private EditorialServicio editorialServicio;
+    @Autowired
+    private ClienteServicio clienteServicio;
 
     @GetMapping
-    public ModelAndView mostrarLibros(HttpServletRequest request) throws MiExcepcion, Exception {
+    public ModelAndView mostrarLibros(HttpSession sesion, HttpServletRequest request) throws MiExcepcion, Exception {
 
         ModelAndView mav = new ModelAndView("libro");
         Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
@@ -43,11 +47,14 @@ public class LibroControlador {
             mav.addObject("exito", flashMap.get("exito-name"));
             mav.addObject("error", flashMap.get("error-name"));
         }
+
         List<Libro> libros = libroServicio.obtenerLibro();
         libros.sort(Libro.compararNombre);
+
         mav.addObject("libros", libros);
         mav.addObject("autores", autorServicio.obtenerAutor());
         mav.addObject("editoriales", editorialServicio.obtenerEditorial());
+        mav.addObject("cliente", clienteServicio.obtenerPerfil((String) sesion.getAttribute("idUsuario")));
         return mav;
 
     }
@@ -72,7 +79,7 @@ public class LibroControlador {
     }
 
     @PostMapping("/guardar")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER')")
     public RedirectView guardar(@RequestParam Long isbn, @RequestParam String nombre, @RequestParam Integer anio, @RequestParam Integer Ejemplares, @RequestParam String autor, @RequestParam String editorial, RedirectAttributes attributes) throws Exception {
         try {
             Autor autorAux = autorServicio.obtenerAutor(autor);
@@ -86,7 +93,7 @@ public class LibroControlador {
     }
 
     @PostMapping("/editar")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER')")
     public RedirectView guardar(@RequestParam String editorial, @RequestParam String autor, @RequestParam Long isbn, @RequestParam String nombre, @RequestParam Integer anio, @RequestParam Integer Ejemplares, @RequestParam String id, @RequestParam Boolean estado, RedirectAttributes attributes) throws Exception {
         try {
             Editorial editorialAux = editorialServicio.obtenerEditorial(editorial);
@@ -100,7 +107,7 @@ public class LibroControlador {
     }
 
     @PostMapping("/modificar-estado")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER')")
     public RedirectView guardar(@RequestParam Boolean estado, @RequestParam String id, RedirectAttributes attributes) throws Exception {
         try {
             libroServicio.modificarLibro(id, estado);

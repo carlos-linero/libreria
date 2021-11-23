@@ -20,6 +20,7 @@ public class Libro {
     private Long isbn;
     @Column(nullable = false)
     private String nombre;
+    @Column(nullable = false)
     private Integer anio;
     @Column(nullable = false)
     private Integer ejemplares;

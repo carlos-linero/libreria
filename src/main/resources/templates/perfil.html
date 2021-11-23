@@ -31,26 +31,35 @@
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                            <a class="nav-link" th:href="@{/cliente}" >Clientes</a>
+                        <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
+                            <a class="nav-link" th:href="@{/cliente}">Clientes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/prestamo}">Prestamo</a>
+                            <a class="nav-link" th:href="@{/prestamo}" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">Prestamos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/libro}">Libro</a>
+                            <a class="nav-link" th:href="@{/libro}">Libros</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" th:href="@{/autor}">Autor</a>
+                            <a class="nav-link" aria-current="page" th:href="@{/autor}">Autores</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/editorial}">Editorial</a>
+                            <a class="nav-link" th:href="@{/editorial}">Editoriales</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/perfil}">perfil</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn" th:href="@{/logout}">Finalizar Sesión</a>
+                        <li class="nav-item dropdown px-2">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Yo
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="nav-link" th:href="@{/perfil}">Perfil</a></li>
+                                <li><a class="nav-link" th:href="@{/prestamo/mis-prestamos/__true__}">En curso</a></li>
+                                <li><a class="nav-link" th:href="@{/prestamo/mis-prestamos/__false__}">Finalizado</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="nav-link" th:href="@{/logout}">Finalizar Sesión</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
@@ -85,11 +94,12 @@
                         <th scope="col">Editar</th>
                     </tr>
                 </thead>
-                <tbody >
+                <tbody>
                     <tr>
-                        <td th:text="*{apellido}"></td>
+
                         <td th:text="*{nombre}"></td>
-                        
+                        <td th:text="*{apellido}"></td>
+
 
                         <td>
                             <button class="btn" title="Datos personales" type="button" data-bs-toggle="modal"
@@ -117,18 +127,18 @@
         </div>
     </main>
 
-    <!-- editar Cliente -->
+    <!-- editar datos personales -->
     <div class="modal fade" id="modificar" tabindex="-1" aria-hidden="true" th:object="${cliente}">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Modificar Cliente</h5>
+                    <h5 class="modal-title">Modificar datos personales</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
                         <form class="needs-validation" method="POST" enctype="multipart/form-data"
-                            th:action="@{cliente/modificar}" novalidate>
+                            th:action="@{perfil/modificar}" novalidate>
 
                             <label class="col-12">Nombre</label>
                             <input class="form-control col-12" type="text" name="nombre" placeholder="Nombre"
@@ -154,7 +164,6 @@
                             <br>
                             <input type="hidden" th:value="*{id}" name="id">
                             <input type="hidden" th:value="*{estado}" name="estado">
-                            <input type="hidden" value="perfil" name="retorno">
                             <div class="modal-footer justify-content-center">
                                 <button type="submit" class="btn no-btn">Cargar datos</button>
                             </div>
@@ -165,9 +174,33 @@
         </div>
     </div>
 
+    <!-- habilitar/deshabilitar -->
+    <div class="modal fade" id="habilitarDeshabilitar" tabindex="-1" aria-hidden="true" th:object="${cliente}">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" th:text="*{estado} ? 'Deshabilitar':'Habilitar'">
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form autocomplete="off" th:action="@{perfil/modificar-estado}" method="POST">
+                        <div><span th:text="*{estado} ? 'Confirmas la deshabilitación':'Confirmas la habilitación'"></span>
+                        </div>
+                        <input type="hidden" th:value="*{estado}" name="estado">
+                        <input type="hidden" th:value="*{id}" name="id">
+                        <div class="modal-footer justify-content-center">
+                            <button title="Confirmar" type="submit" value="Submit" class="btn no-btn">si</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Datos Personales cliente -->
     <div class="modal fade" id="datos" tabindex="-1" aria-hidden="true" th:object="${cliente}">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title col-8 text-end" th:text="|*{nombre} *{apellido}|"></h5>
@@ -197,7 +230,7 @@
 
     <!-- Historial Prestamos -->
     <div class="modal fade" id="hprestamo" tabindex="-1" aria-hidden="true" th:object="${cliente}">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title col-8 text-end" th:text="|*{nombre} *{apellido}|"></h5>
@@ -216,13 +249,13 @@
                                 <tr>
                                     <td th:if="*{estado}">
                                         <a title="Prestamos vigentes" class="btn"
-                                            th:href="@{/prestamo/historial/__true__/__*{id}__/__*{nombre}__/__*{apellido}__}">
+                                            th:href="@{/prestamo/mis-prestamos/__true__}">
                                             <i class="far fa-newspaper"></i> </a>
                                     </td>
 
                                     <td>
                                         <a title="Prestamos finalizados" class="btn"
-                                            th:href="@{/prestamo/historial/__false__/__*{id}__/__*{nombre}__/__*{apellido}__}">
+                                            th:href="@{/prestamo/mis-prestamos/__false__}">
                                             <i class="far fa-folder-open"></i> </a>
                                     </td>
                                 </tr>

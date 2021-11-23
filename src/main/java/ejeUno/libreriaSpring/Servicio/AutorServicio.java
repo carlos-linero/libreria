@@ -95,4 +95,14 @@ public class AutorServicio implements ValidacionInterface {
             throw e;
         }
     }
+
+    @Transactional(readOnly = true)
+    public List<Autor> obtenerAutor(Boolean estado) throws Exception {
+        try {
+            List<Autor> autor = autorRepositorio.findByEstado(estado); 
+            return autor;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 }

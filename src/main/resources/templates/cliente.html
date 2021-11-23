@@ -31,32 +31,42 @@
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                            <a class="nav-link" th:href="@{/cliente}">Cliente</a>
+                        <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
+                            <a class="nav-link" th:href="@{/cliente}">Clientes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/prestamo}">Prestamo</a>
+                            <a class="nav-link" th:href="@{/prestamo}" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">Prestamos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/libro}">Libro</a>
+                            <a class="nav-link" th:href="@{/libro}">Libros</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" th:href="@{/autor}">Autor</a>
+                            <a class="nav-link" aria-current="page" th:href="@{/autor}">Autores</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/editorial}">Editorial</a>
+                            <a class="nav-link" th:href="@{/editorial}">Editoriales</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/perfil}">Perfil</a>
-                        </li>
-                        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+
+                        <li class="nav-item" sec:authorize="hasRole('SUPER')">
 
                             <a title="Agregar Cliente" data-bs-toggle="modal" class="btn"
                                 data-bs-target="#agregarCliente">Agregar Cliente</a>
 
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn" th:href="@{/logout}">Finalizar Sesión</a>
+                        <li class="nav-item dropdown px-2">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Yo
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="nav-link" th:href="@{/perfil}">Perfil</a></li>
+                                <li><a class="nav-link" th:href="@{/prestamo/mis-prestamos/__true__}">En curso</a></li>
+                                <li><a class="nav-link" th:href="@{/prestamo/mis-prestamos/__false__}">Finalizado</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="nav-link" th:href="@{/logout}">Finalizar Sesión</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
@@ -65,7 +75,7 @@
     <div th:if="${clientes.isEmpty()}" class="text-center">
         <h5>No hay ningun Cliente registrado</h5>
         <button title="Agregar Cliente" type="button" class="btn" data-bs-toggle="modal"
-            data-bs-target="#agregarCliente">
+            data-bs-target="#agregarCliente" sec:authorize="hasRole('SUPER')">
             Agregar Cliente
         </button>
     </div>
@@ -87,15 +97,15 @@
 
     <main th:unless="${clientes.isEmpty()}" class="container-fluid  my-5">
         <div class="table-responsive  py-2">
-            <table class="table table-hover text-center table-sm table-borderless">
+            <table class="table table-hover text-center table-sm table-borderless" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
                 <thead>
                     <tr>
                         <th scope="col">Nombre</th>
                         <th scope="col">apellido</th>
                         <th scope="col">Datos personales</th>
                         <th scope="col">Prestamos</th>
-                        <th scope="col">Editar</th>
-                        <th scope="col">Des/Habilitar</th>
+                        <th scope="col" sec:authorize="hasRole('SUPER')">Editar</th>
+                        <th scope="col" sec:authorize="hasRole('SUPER')">Des/Habilitar</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -117,25 +127,26 @@
                             </button>
                         </td>
 
-                        <td th:if="${cliente.estado}">
+                        <td th:if="${cliente.estado}" sec:authorize="hasRole('SUPER')">
                             <button class="btn" title="Editar" type="button" data-bs-toggle="modal"
                                 th:attr="data-bs-target=|#modificar${cliente.id}|">
                                 <i class="far fa-edit"></i>
                             </button>
                         </td>
 
-                        <td th:unless="${cliente.estado}">
+                        <td th:unless="${cliente.estado}" sec:authorize="hasRole('SUPER')">
                             <button disabled class="btn" title="Editar" type="button">
                                 <i class="far fa-edit"></i>
                             </button>
                         </td>
 
-                        <td th:if="${cliente.estado}"><button class="btn" title="Deshabilitar" type="button"
+                        <td th:if="${cliente.estado}" sec:authorize="hasRole('SUPER')">
+                            <button class="btn" title="Deshabilitar" type="button"
                                 data-bs-toggle="modal" th:attr="data-bs-target=|#habilitarDeshabilitar${cliente.id}|">
                                 <i class="far fa-minus-square"></i>
                             </button>
                         </td>
-                        <td th:unless="${cliente.estado}">
+                        <td th:unless="${cliente.estado}" sec:authorize="hasRole('SUPER')">
                             <button class="btn" title="Habilitar" type="button" data-bs-toggle="modal"
                                 th:attr="data-bs-target=|#habilitarDeshabilitar${cliente.id}|">
                                 <i class="far fa-plus-square"></i>
@@ -148,10 +159,12 @@
         </div>
     </main>
 
-    <!-- editar Cliente -->
+
     <div th:each="cliente : ${clientes}">
-        <div class="modal fade" th:attr="id=|modificar${cliente.id}|" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+
+        <!-- editar Cliente -->
+        <div class="modal fade" th:attr="id=|modificar${cliente.id}|" tabindex="-1" aria-hidden="true" sec:authorize="hasRole('SUPER')">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Modificar Cliente</h5>
@@ -186,6 +199,7 @@
                                 <br>
                                 <input type="hidden" th:value="${cliente.id}" name="id">
                                 <input type="hidden" th:value="${cliente.estado}" name="estado">
+                                <input type="hidden" value="cliente" name="retorno">
                                 <div class="modal-footer justify-content-center">
                                     <button type="submit" class="btn no-btn">Cargar datos</button>
                                 </div>
@@ -197,8 +211,8 @@
         </div>
 
         <!-- habilitar/deshabilitar Cliente -->
-        <div class="modal fade" th:attr="id=|habilitarDeshabilitar${cliente.id}|" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+        <div class="modal fade" th:attr="id=|habilitarDeshabilitar${cliente.id}|" tabindex="-1" aria-hidden="true" sec:authorize="hasRole('SUPER')">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title"
@@ -211,6 +225,7 @@
                             </div>
                             <input type="hidden" th:attr="value=${cliente.estado}" name="estado">
                             <input type="hidden" th:attr="value=${cliente.id}" name="id">
+                            <input type="hidden" value="cliente" name="retorno">
                             <div class="modal-footer justify-content-center">
                                 <button title="Confirmar" type="submit" value="Submit" class="btn no-btn">si</button>
                             </div>
@@ -221,8 +236,8 @@
         </div>
 
         <!-- Datos Personales cliente -->
-        <div class="modal fade" th:attr="id=|datos${cliente.id}|" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+        <div class="modal fade" th:attr="id=|datos${cliente.id}|" tabindex="-1" aria-hidden="true" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title col-8 text-end" th:text="|${cliente.nombre} ${cliente.apellido}|"></h5>
@@ -251,8 +266,8 @@
         </div>
 
         <!-- Historial Prestamos -->
-        <div class="modal fade" th:attr="id=|hprestamo${cliente.id}|" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+        <div class="modal fade" th:attr="id=|hprestamo${cliente.id}|" tabindex="-1" aria-hidden="true" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title col-8 text-end" th:text="|${cliente.nombre} ${cliente.apellido}|"></h5>
@@ -271,13 +286,13 @@
                                     <tr>
                                         <td th:if="${cliente.estado}">
                                             <a title="Prestamos vigentes" class="btn"
-                                                th:href="@{/prestamo/historial/__true__/__${cliente.id}__/__${cliente.nombre}__/__${cliente.apellido}__}">
+                                                th:href="@{/prestamo/historial/__true__/__${cliente.usuario.id}__/__${cliente.nombre}__/__${cliente.apellido}__}">
                                                 <i class="far fa-newspaper"></i> </a>
                                         </td>
 
                                         <td>
                                             <a title="Prestamos finalizados" class="btn"
-                                                th:href="@{/prestamo/historial/__false__/__${cliente.id}__/__${cliente.nombre}__/__${cliente.apellido}__}">
+                                                th:href="@{/prestamo/historial/__false__/__${cliente.usuario.id}__/__${cliente.nombre}__/__${cliente.apellido}__}">
                                                 <i class="far fa-folder-open"></i> </a>
                                         </td>
                                     </tr>
@@ -292,8 +307,8 @@
     </div>
 
     <!-- agregar cliente -->
-    <div class="modal fade" id="agregarCliente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+    <div class="modal fade" id="agregarCliente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" sec:authorize="hasRole('SUPER')">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title col-8 text-end">Agregar Cliente</h5>

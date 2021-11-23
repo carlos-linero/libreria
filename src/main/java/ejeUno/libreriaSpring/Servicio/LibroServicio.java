@@ -49,6 +49,7 @@ public class LibroServicio implements ValidacionInterface {
     @Transactional
     public void modificarLibro(Editorial editorial, Autor autor, Long isbn, String nombre, Integer anio, Integer ejemplares, String id, Boolean estado) throws Exception, MiExcepcion {
         try {
+            
             validacionPresencia(autor, "Autor");
             validacionPresencia(editorial, "Editorial");
             validacionEstado(estado, "Libro");
@@ -59,6 +60,7 @@ public class LibroServicio implements ValidacionInterface {
             validacionPresencia(respuesta, "Libro");
 
             Libro libro = libroRepositorio.findById(id).get();
+            validacionPrestados(libro.getEjemplaresPrestados());
             if (!libro.getIsbn().equals(isbn)) {
                 validacionIsbn(isbn, libroRepositorio.obtenerLibroxIsbn(isbn));
             }
@@ -82,7 +84,7 @@ public class LibroServicio implements ValidacionInterface {
         try {
             validacionEstado(estado, "Libro");
             Optional<Libro> respuesta = libroRepositorio.findById(id);
-            validacionPresencia(respuesta, "Editorial");
+            validacionPresencia(respuesta, "Libro");
             validacionTransaccion(cantDevolucion, cantActual, cantActual);
 
             Libro libro = libroRepositorio.findById(id).get();

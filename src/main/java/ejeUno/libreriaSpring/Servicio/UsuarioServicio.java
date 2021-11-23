@@ -81,8 +81,8 @@ public class UsuarioServicio implements UserDetailsService, ValidacionInterface 
             throw e;
         }
     }
-    
-            @Transactional(readOnly = true)
+
+    @Transactional(readOnly = true)
     public Usuario obteneUsuario(String id) throws Exception, MiExcepcion {
         try {
             //return autorRepositorio.obtenerAutores(true);
@@ -99,19 +99,19 @@ public class UsuarioServicio implements UserDetailsService, ValidacionInterface 
     public UserDetails loadUserByUsername(String correo) throws UsernameNotFoundException {
         try {
             Usuario usuario = usuarioRepositorio.findByCorreo(correo).orElseThrow(() -> new UsernameNotFoundException("Corre no se encuentra asociado a una cuenta"));
-            
-                if (usuario.getEstado() == false) {
-                    throw new UsernameNotFoundException("La cuenta no se encuentra habilitada");
-                }
-           
+
+            if (usuario.getEstado() == false) {
+                throw new UsernameNotFoundException("La cuenta no se encuentra habilitada");
+            }
+
             GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + usuario.getRol().getNombre());
 
             ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-            
+
             HttpSession sesion = attr.getRequest().getSession(true);
-            
+
             sesion.setAttribute("idUsuario", usuario.getId());
-            
+
             return new User(usuario.getCorreo(), usuario.getClave(), Collections.singletonList(authority));
         } catch (UsernameNotFoundException es) {
             throw es;

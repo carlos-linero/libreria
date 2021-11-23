@@ -31,51 +31,61 @@
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                            <a class="nav-link" th:href="@{/cliente}">Cliente</a>
+                        <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
+                            <a class="nav-link" th:href="@{/cliente}">Clientes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/prestamo}">Prestamo</a>
+                            <a class="nav-link" th:href="@{/prestamo}"
+                                sec:authorize="hasAnyRole('ADMIN', 'SUPER')">Prestamos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" th:href="@{/libro}">Libro</a>
+                            <a class="nav-link" aria-current="page" th:href="@{/libro}">Libros</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/autor}">Autor</a>
+                            <a class="nav-link" th:href="@{/autor}">Autores</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/editorial}">Editorial</a>
+                            <a class="nav-link" th:href="@{/editorial}">Editoriales</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/perfil}">Perfil</a>
-                        </li>
-                        <li th:if="${clientes.isEmpty()} or ${libros.isEmpty()}" class="nav-item">
+
+                        <!--<li th:if="${clientes.isEmpty()} or ${libros.isEmpty()}" class="nav-item">
 
                             <a title="Registrar Prestamo" class="btn" aria-disabled="true">Registrar Prestamo</a>
                         </li>
                         <li th:unless="${clientes.isEmpty()} or ${libros.isEmpty()}" class="nav-item">
                             <a title="Registrar Prestamo" data-bs-toggle="modal" class="btn"
                                 data-bs-target="#agregarPrestamo">Registrar Prestamo</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn" th:href="@{/logout}">Finalizar Sesión</a>
+                        </li>-->
+                        <li class="nav-item dropdown px-2">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Yo
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="nav-link" th:href="@{/perfil}">Perfil</a></li>
+                                <li><a class="nav-link" th:href="@{/prestamo/mis-prestamos/__true__}">En curso</a></li>
+                                <li><a class="nav-link" th:href="@{/prestamo/mis-prestamos/__false__}">Finalizado</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="nav-link" th:href="@{/logout}">Finalizar Sesión</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
             </div>
     </nav>
     <div th:if="${prestamos.isEmpty()}" class="text-center">
-        <div th:if="${clientes.isEmpty()} or ${libros.isEmpty()}">
-            <h4>No hay ningún prestamo registrado</h4>
-            <h5>Para poder realizar un prestamo al menos tiene que haber un libro registrado</h5>
+        <div>
+            <h4>No hay ningún prestamo en curso</h4>
         </div>
-        <div th:unless="${clientes.isEmpty()} or ${libros.isEmpty()}">
+        <!--<div th:unless="${clientes.isEmpty()} or ${libros.isEmpty()}">
             <h5>No hay ningún prestamo registrado</h5>
             <button title="Registrar Prestamo" type="button" class="btn" data-bs-toggle="modal"
                 data-bs-target="#agregarPrestamo">
                 Registrar Prestamo
             </button>
-        </div>
+        </div> -->
     </div>
 
     <div class=" container-fluid">
@@ -95,12 +105,14 @@
     </div>
     <main th:unless="${prestamos.isEmpty()}" class="container-fluid  my-5">
         <div class="table-responsive  py-2">
-            <table class="table table-hover text-center table-sm table-borderless">
+            <table class="table table-hover text-center table-sm table-borderless"
+                sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
                 <thead>
                     <tr>
                         <th scope="col">Nombre</th>
                         <th scope="col">Libro</th>
-                        <th scope="col">Ejemplares</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Restantes</th>
                         <th scope="col">Fecha de devolución</th>
                         <th scope="col">Realizar devolución</th>
                     </tr>
@@ -110,6 +122,7 @@
                         <td th:text="${prestamo.cliente.nombre}"></td>
                         <td th:text="${prestamo.libro.nombre}"></td>
                         <td th:text="${prestamo.cantidadRegistro}"></td>
+                        <td th:text="${prestamo.cantidad}"></td>
                         <td th:text="${prestamo.fechaDevolucion}"></td>
 
                         <td th:if="${prestamo.estado}">
@@ -129,10 +142,12 @@
         </div>
     </main>
 
-    <!-- Editar Prestamo -->
+    <!-- Regresar Prestamo -->
     <div th:each="prestamo : ${prestamos}">
-        <div class="modal fade" th:attr="id=|modificar${prestamo.id}|" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal fade" th:attr="id=|modificar${prestamo.id}|" tabindex="-1" aria-hidden="true"
+            sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Devolución</h5>
@@ -141,18 +156,19 @@
                     <div class="modal-body">
                         <div class="container-fluid">
                             <form class="needs-validation" method="POST" enctype="multipart/form-data"
-                                th:action="@{prestamo/devolucion}" novalidate>
+                                th:action="@{prestamo/devolucion-admin}" novalidate>
 
                                 <label>Cantidad a devolver</label>
                                 <input class="form-control" type="number" name="cantidad" value="0"
-                                    aria-describedby="isbnAyuda" required>
-                                <div id="isbnAyuda" class="form-text"
-                                    th:text="|Actualmente posee '${prestamo.cantidad}' ejemplar/es|">
+                                    aria-describedby="cantidadAyuda" required>
+                                <div id="cantidadAyuda" class="form-text"
+                                    th:text="|Ejemplares restantes: '${prestamo.cantidad}'|">
                                 </div>
                                 <div class="invalid-feedback">creo que se te olvido algo :(</div>
-                                <input type="hidden" th:attr="value=${prestamo.id}" name="prestamo">
-                                <input type="hidden" th:attr="value=${prestamo.cliente.id}" name="cliente">
-                                <input type="hidden" th:attr="value=${prestamo.libro.id}" name="libro">
+                                <input type="hidden" th:value="${prestamo.id}" name="prestamo">
+                                <input type="hidden" th:value="${prestamo.cliente.id}" name="cliente">
+                                <input type="hidden" th:value="${prestamo.libro.id}" name="libro">
+                                <input type="hidden" value="prestamo" name="retorno">
                                 <hr class="my-4">
                                 <div class="modal-dialog-centered justify-content-center">
                                     <button type="submit" class="btn no-btn">Realizar devolución</button>
@@ -164,34 +180,11 @@
             </div>
         </div>
 
-        <!-- habilitar/deshabilitar Libro 
-        <div class="modal fade" th:attr="id=|habilitarDeshabilitar${libro.id}|" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" th:text="${libro.estado} ? 'Deshabilitar Libro':'Habilitar Libro'"></h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form autocomplete="off" th:action="@{libro/modificar-estado}" method="POST">
-                            <div><span th:text="|Confirmas el cambio de estado de el libro: ${libro.nombre}|"></span>
-                            </div>
-                            <input type="hidden" th:attr="value=${libro.estado}" name="estado">
-                            <input type="hidden" th:attr="value=${libro.id}" name="id">
-
-                            <hr class="my-4">
-                            <div class="modal-dialog-centered justify-content-center">
-                                <button title="Confirmar" type="submit" value="Submit" class="btn no-btn">Si</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>-->
     </div>
 
 
-    <!-- Registrar Prestamo -->
+    <!-- Registrar Prestamo 
+
     <div class="modal fade" id="agregarPrestamo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
@@ -245,10 +238,9 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <footer class="fixed-bottom container-fluid text-center py-2"><span>© Carlos Linero</span></footer>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>

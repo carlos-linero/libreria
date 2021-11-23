@@ -2,11 +2,14 @@ package ejeUno.libreriaSpring.Controlador;
 
 import static com.sun.corba.se.spi.presentation.rmi.StubAdapter.request;
 import ejeUno.libreriaSpring.Entidad.Autor;
+import ejeUno.libreriaSpring.Entidad.Usuario;
 import ejeUno.libreriaSpring.Excepciones.MiExcepcion;
 import ejeUno.libreriaSpring.Servicio.AutorServicio;
+import ejeUno.libreriaSpring.Servicio.UsuarioServicio;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -25,10 +28,11 @@ public class AutorControlador {
 
     @Autowired
     private AutorServicio autorServicio;
-
+    @Autowired
+    private UsuarioServicio usuarioServicio;
 
     @GetMapping
-    public ModelAndView mostrarAutores(HttpServletRequest request) throws MiExcepcion, Exception {
+    public ModelAndView mostrarAutores(HttpSession sesion, HttpServletRequest request) throws MiExcepcion, Exception {
 
         ModelAndView mav = new ModelAndView("autor");
         Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
@@ -36,9 +40,20 @@ public class AutorControlador {
             mav.addObject("exito", flashMap.get("exito-name"));
             mav.addObject("error", flashMap.get("error-name"));
         }
-        List<Autor> autores = autorServicio.obtenerAutor();
-        autores.sort(Autor.compararNombre);
-        mav.addObject("autores", autores);
+        
+        Usuario usuario = usuarioServicio.obteneUsuario((String) sesion.getAttribute("idUsuario"));
+        if (usuario.getRol().getNombre().equals("CLIENTE")) {
+        
+            List<Autor> autores = autorServicio.obtenerAutor(true);
+            autores.sort(Autor.compararNombre);
+            mav.addObject("autores", autores);
+        } else {
+        
+            List<Autor> autores = autorServicio.obtenerAutor();
+            autores.sort(Autor.compararNombre);
+            mav.addObject("autores", autores);
+        }
+
         return mav;
     }
 
@@ -55,7 +70,7 @@ public class AutorControlador {
         }
     }*/
     @PostMapping("/guardar")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER')")
     public RedirectView guardar(@RequestParam String nombre, RedirectAttributes attributes) throws Exception {
         try {
             autorServicio.crearAutor(nombre);
@@ -67,7 +82,7 @@ public class AutorControlador {
     }
 
     @PostMapping("/modificar-nombre")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER')")
     public RedirectView guardar(@RequestParam String nombre, @RequestParam Boolean estado, @RequestParam String id, RedirectAttributes attributes) throws Exception {
         try {
             autorServicio.modificarAutor(id, nombre, estado);
@@ -79,7 +94,7 @@ public class AutorControlador {
     }
 
     @PostMapping("/modificar-estado")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER')")
     public RedirectView guardar(@RequestParam Boolean estado, @RequestParam String id, RedirectAttributes attributes) throws Exception {
         try {
             autorServicio.modificarAutor(id, estado);

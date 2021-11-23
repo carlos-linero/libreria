@@ -203,7 +203,7 @@ public interface ValidacionInterface {
             if (cantidad == null) {
                 throw new MiExcepcion("Error al identificar cantidad de libros prestados");
             } else if (cantidad > 0) {
-                throw new MiExcepcion("Quedan ejemplares sin regresar");
+                throw new MiExcepcion("No se puede modificar, Aún Quedan ejemplares sin regresar");
             }
 
         } catch (MiExcepcion es) {
@@ -215,7 +215,6 @@ public interface ValidacionInterface {
 
     default void validacionPrestados(Long cantidad) throws MiExcepcion {
         try {
-            LocalDate actual = LocalDate.now();
             if (cantidad == null) {
                 throw new MiExcepcion("Error al identificar cantidad de libros prestados");
             } else if (cantidad > 0) {

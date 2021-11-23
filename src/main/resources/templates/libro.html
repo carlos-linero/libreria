@@ -31,34 +31,47 @@
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                            <a class="nav-link" th:href="@{/cliente}">Cliente</a>
+                        <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
+                            <a class="nav-link" th:href="@{/cliente}">Clientes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/prestamo}">Prestamo</a>
+                            <a class="nav-link" th:href="@{/prestamo}"
+                                sec:authorize="hasAnyRole('ADMIN', 'SUPER')">Prestamos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" th:href="@{/libro}">Libro</a>
+                            <a class="nav-link" aria-current="page" th:href="@{/libro}">Libros</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/autor}">Autor</a>
+                            <a class="nav-link" th:href="@{/autor}">Autores</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/editorial}">Editorial</a>
+                            <a class="nav-link" th:href="@{/editorial}">Editoriales</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/perfil}">Perfil</a>
-                        </li>
-                        <li th:if="${autores.isEmpty()} or ${editoriales.isEmpty()}" class="nav-item" sec:authorize="hasRole('ADMIN')">
+
+                        <li th:if="${autores.isEmpty()} or ${editoriales.isEmpty()}" class="nav-item"
+                            sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
 
                             <a title="Agregar Libro" class="btn" aria-disabled="true">Agregar Libro</a>
                         </li>
-                        <li th:unless="${autores.isEmpty()} or ${editoriales.isEmpty()}" class="nav-item" sec:authorize="hasRole('ADMIN')">
+                        <li th:unless="${autores.isEmpty()} or ${editoriales.isEmpty()}" class="nav-item"
+                            sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
                             <a title="Agregar Libro" data-bs-toggle="modal" class="btn"
                                 data-bs-target="#agregarLibro">Agregar Libro</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn" th:href="@{/logout}">Finalizar Sesión</a>
+                        <li class="nav-item dropdown px-2">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Yo
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="nav-link" th:href="@{/perfil}">Perfil</a></li>
+                                <li><a class="nav-link" th:href="@{/prestamo/mis-prestamos/__true__}">En curso</a></li>
+                                <li><a class="nav-link" th:href="@{/prestamo/mis-prestamos/__false__}">Finalizado</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="nav-link" th:href="@{/logout}">Finalizar Sesión</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
@@ -67,12 +80,14 @@
     <div th:if="${libros.isEmpty()}" class="text-center">
         <div th:if="${autores.isEmpty()} or ${editoriales.isEmpty()}">
             <h4>No hay ningún libro registrado</h4>
-            <h5 sec:authorize="hasRole('ADMIN')">Para poder agregar un libro primero debes tener al menos un autor y una editorial registrada</h5>
+            <h5 sec:authorize="hasAnyRole('ADMIN', 'SUPER')">Para poder agregar un libro primero debes tener al menos un
+                autor y una
+                editorial registrada</h5>
         </div>
         <div th:unless="${autores.isEmpty()} or ${editoriales.isEmpty()}">
             <h5>No hay ningun libro registrado</h5>
             <button title="Agregar Libro" type="button" class="btn" data-bs-toggle="modal"
-                data-bs-target="#agregarLibro" sec:authorize="hasRole('ADMIN')">
+                data-bs-target="#agregarLibro" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
                 Agregar Libro
             </button>
         </div>
@@ -102,8 +117,9 @@
                         <th scope="col">Autor</th>
                         <th scope="col">Editorial</th>
                         <th scope="col">Disponible</th>
-                        <th scope="col" sec:authorize="hasRole('ADMIN')">Editar</th>
-                        <th scope="col" sec:authorize="hasRole('ADMIN')">Des/Habilitar</th>
+                        <th scope="col">Retirar</th>
+                        <th scope="col" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">Editar</th>
+                        <th scope="col" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">Des/Habilitar</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -115,24 +131,36 @@
                         <td th:if="${libro.estado}" th:text="${libro.ejemplaresRestantes}"></td>
                         <td th:unless="${libro.estado}" th:text="0"></td>
 
-                        <td th:if="${libro.estado}" sec:authorize="hasRole('ADMIN')">
+                        <td th:if="${libro.estado} and ${libro.ejemplaresRestantes > 0}">
+                            <button class="btn" title="prestar" type="button" data-bs-toggle="modal"
+                                th:attr="data-bs-target=|#prestamo${libro.id}|">
+                                <i class="fas fa-shopping-basket"></i>
+                            </button>
+                        </td>
+                        <td th:unless="${libro.estado} and ${libro.ejemplaresRestantes > 0}">
+                            <button disabled class="btn" title="prestar" type="button">
+                                <i class="fas fa-shopping-basket"></i>
+                            </button>
+                        </td>
+
+                        <td th:if="${libro.estado}" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
                             <button class="btn" title="Editar" type="button" data-bs-toggle="modal"
                                 th:attr="data-bs-target=|#modificar${libro.id}|">
                                 <i class="far fa-edit"></i>
                             </button>
                         </td>
-                        <td th:unless="${libro.estado}" sec:authorize="hasRole('ADMIN')">
+                        <td th:unless="${libro.estado}" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
                             <button disabled class="btn" title="Editar" type="button">
                                 <i class="far fa-edit"></i>
                             </button>
                         </td>
-                        <td th:if="${libro.estado}" sec:authorize="hasRole('ADMIN')">
+                        <td th:if="${libro.estado}" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
                             <button class="btn" title="Deshabilitar" type="button" data-bs-toggle="modal"
                                 th:attr="data-bs-target=|#habilitarDeshabilitar${libro.id}|">
                                 <i class="far fa-minus-square"></i>
                             </button>
                         </td>
-                        <td th:unless="${libro.estado}" sec:authorize="hasRole('ADMIN')">
+                        <td th:unless="${libro.estado}" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
                             <button class="btn" title="Habilitar" type="button" data-bs-toggle="modal"
                                 th:attr="data-bs-target=|#habilitarDeshabilitar${libro.id}|">
                                 <i class="far fa-plus-square"></i>
@@ -144,10 +172,56 @@
         </div>
     </main>
 
-    <!-- Editar Libro -->
+
     <div th:each="libro : ${libros}">
-        <div class="modal fade" th:attr="id=|modificar${libro.id}|" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+
+        <!-- Registrar Prestamo -->
+        <div class="modal fade" th:attr="id=|prestamo${libro.id}|" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Registrar Prestamo</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <form class="needs-validation" method="POST" enctype="multipart/form-data"
+                                th:action="@{/prestamo/registrar-prestamo}" th:object="${cliente}" novalidate>
+
+                                <label>Cantidad a retirar</label>
+                                <input class="form-control" type="number" name="cantidad" value="0" required>
+                                <div class="invalid-feedback">creo que se te olvido algo :(</div>
+                                <br>
+
+
+                                <label>Fecha de devolución</label> <br>
+                                <input class="form-control" type="date" name="fechaDevolucion" required>
+                                <div class="invalid-feedback">creo que se te olvido algo :(</div>
+                                <br>
+                                <input type="hidden" th:value="${libro.id}" name="libro">
+                                <input type="hidden" th:value="${libro.estado}" name="estado">
+                                <input type="hidden" th:value="*{id}" name="cliente">
+                                <input type="hidden" th:value="*{usuario.id}" name="usuario">
+
+
+                                <hr class="my-4">
+                                <div class="modal-dialog-centered justify-content-center">
+                                    <button title="Guardar Libro" type="submit" value="Submit" class="btn no-btn">
+                                        Realizar Prestamo
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Editar Libro -->
+        <div class="modal fade" th:attr="id=|modificar${libro.id}|" tabindex="-1" aria-hidden="true"
+            sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Modificar Libro</h5>
@@ -217,8 +291,9 @@
         </div>
 
         <!-- habilitar/deshabilitar Libro -->
-        <div class="modal fade" th:attr="id=|habilitarDeshabilitar${libro.id}|" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+        <div class="modal fade" th:attr="id=|habilitarDeshabilitar${libro.id}|" tabindex="-1" aria-hidden="true"
+            sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" th:text="${libro.estado} ? 'Deshabilitar Libro':'Habilitar Libro'"></h5>
@@ -244,7 +319,8 @@
 
 
     <!-- Agregar Libro -->
-    <div class="modal fade" id="agregarLibro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="agregarLibro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+        sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">

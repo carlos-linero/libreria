@@ -1,11 +1,14 @@
 package ejeUno.libreriaSpring.Controlador;
 
 import ejeUno.libreriaSpring.Entidad.Editorial;
+import ejeUno.libreriaSpring.Entidad.Usuario;
 import ejeUno.libreriaSpring.Excepciones.MiExcepcion;
 import ejeUno.libreriaSpring.Servicio.EditorialServicio;
+import ejeUno.libreriaSpring.Servicio.UsuarioServicio;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -24,9 +27,11 @@ public class EditorialControlador {
 
     @Autowired
     private EditorialServicio editorialServicio;
+    @Autowired
+    UsuarioServicio usuarioServicio;
 
     @GetMapping
-    public ModelAndView mostrarEditoriales(HttpServletRequest request) throws MiExcepcion, Exception {
+    public ModelAndView mostrarEditoriales(HttpSession sesion, HttpServletRequest request) throws MiExcepcion, Exception {
 
         ModelAndView mav = new ModelAndView("editorial");
         Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
@@ -34,14 +39,22 @@ public class EditorialControlador {
             mav.addObject("exito", flashMap.get("exito-name"));
             mav.addObject("error", flashMap.get("error-name"));
         }
-        List<Editorial> editoriales = editorialServicio.obtenerEditorial();
-        editoriales.sort(Editorial.compararNombre);
-        mav.addObject("editoriales", editoriales);
+        Usuario usuario = usuarioServicio.obteneUsuario((String) sesion.getAttribute("idUsuario"));
+        if (usuario.getRol().getNombre().equals("CLIENTE")) {
+            List<Editorial> editoriales = editorialServicio.obtenerEditorial(true);
+            editoriales.sort(Editorial.compararNombre);
+            mav.addObject("editoriales", editoriales);
+        } else {
+            List<Editorial> editoriales = editorialServicio.obtenerEditorial();
+            editoriales.sort(Editorial.compararNombre);
+            mav.addObject("editoriales", editoriales);
+        }
+
         return mav;
     }
 
     @PostMapping("/guardar")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER')")
     public RedirectView guardar(@RequestParam String nombre, RedirectAttributes attributes) throws Exception {
         try {
             editorialServicio.crearEditorial(nombre);
@@ -53,7 +66,7 @@ public class EditorialControlador {
     }
 
     @PostMapping("/modificar-nombre")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER')")
     public RedirectView guardar(@RequestParam String nombre, @RequestParam Boolean estado, @RequestParam String id, RedirectAttributes attributes) throws Exception {
         try {
             editorialServicio.modificarEditorial(id, nombre, estado);
@@ -65,7 +78,7 @@ public class EditorialControlador {
     }
 
     @PostMapping("/modificar-estado")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER')")
     public RedirectView guardar(@RequestParam Boolean estado, @RequestParam String id, RedirectAttributes attributes) throws Exception {
         try {
             editorialServicio.modificarEditorial(id, estado);

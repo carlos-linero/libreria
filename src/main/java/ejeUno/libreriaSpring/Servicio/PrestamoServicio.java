@@ -24,8 +24,9 @@ public class PrestamoServicio implements ValidacionInterface {
     private LibroRepositorio libroRepositorio;
 
     @Transactional
-    public void guardarTransaccion(LocalDate fechaDevolucion, Integer cantidad, Cliente cliente, Libro libro) throws Exception, MiExcepcion {
+    public void guardarTransaccion(Boolean estado, LocalDate fechaDevolucion, Integer cantidad, Cliente cliente, Libro libro) throws Exception, MiExcepcion {
         try {
+            validacionEstado(estado, "Libro");
             validacionFechaDevolucion(fechaDevolucion);
             validacionPresencia(cantidad, "cantidad");
             validacionPresencia(cliente, "cliente");
@@ -74,6 +75,7 @@ public class PrestamoServicio implements ValidacionInterface {
 
             libro.setEjemplaresPrestados(Math.abs(libro.getEjemplaresPrestados() - cantidad));
             libro.setEjemplaresRestantes(Math.abs(libro.getEjemplares() - libro.getEjemplaresPrestados()));
+
             libroRepositorio.save(libro);
         } catch (MiExcepcion es) {
             throw es;
@@ -88,6 +90,7 @@ public class PrestamoServicio implements ValidacionInterface {
             prestamo.setLibro(libro);
             if (prestamo.getCantidad() <= 0) {
                 prestamo.setEstado(false);
+                prestamo.setFechaFinalizada(LocalDate.now());
             }
 
             prestamoRepositorio.save(prestamo);
@@ -102,7 +105,7 @@ public class PrestamoServicio implements ValidacionInterface {
     @Transactional(readOnly = true)
     public Prestamo obtenerPrestamo(String id) throws Exception {
         try {
-            
+
             Optional<Prestamo> respuesta = prestamoRepositorio.findById(id);
             validacionPresencia(respuesta, "Prestamo");
             return prestamoRepositorio.findById(id).get();
@@ -114,7 +117,7 @@ public class PrestamoServicio implements ValidacionInterface {
     @Transactional(readOnly = true)
     public List<Prestamo> obtenerPrestamo() throws Exception {
         try {
-           
+
             return prestamoRepositorio.findAll();
         } catch (Exception e) {
             throw e;
@@ -122,18 +125,36 @@ public class PrestamoServicio implements ValidacionInterface {
     }
 
     @Transactional(readOnly = true)
-    public List<Prestamo> obtenerPrestamo(Boolean estado) throws Exception {
+    public List<Prestamo> obtenerPrestamoxRol(Boolean estado, String rol) throws Exception {
         try {
-            return prestamoRepositorio.findAll(estado);
+            return prestamoRepositorio.prestamoRol(estado, rol);
         } catch (Exception e) {
             throw e;
         }
     }
-    
-        @Transactional(readOnly = true)
+
+    @Transactional(readOnly = true)
+    public List<Prestamo> obtenerPrestamoxPerfil(Boolean estado, String usuarioId) throws Exception {
+        try {
+            return prestamoRepositorio.prestamoPerfil(estado, usuarioId);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    /*@Transactional(readOnly = true)
     public List<Prestamo> obtenerPrestamo(Boolean estado, String id) throws Exception {
         try {
             return prestamoRepositorio.findAll(estado, id);
+        } catch (Exception e) {
+            throw e;
+        }
+    }*/
+    
+        @Transactional(readOnly = true)
+    public List<Prestamo> obtenerPrestamo(Boolean estado) throws Exception {
+        try {
+            return prestamoRepositorio.findByEstado(estado);
         } catch (Exception e) {
             throw e;
         }

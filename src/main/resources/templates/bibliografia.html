@@ -29,27 +29,37 @@
                 <div class="offcanvas-body">
 
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                            <a class="nav-link" th:href="@{/cliente}">Cliente</a>
+                        <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
+                            <a class="nav-link" th:href="@{/cliente}">Clientes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/prestamo}">Prestamo</a>
+                            <a class="nav-link" th:href="@{/prestamo}" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">Prestamos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/libro}">Libro</a>
+                            <a class="nav-link" th:href="@{/libro}">Libros</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/autor}">Autor</a>
+                            <a class="nav-link" th:href="@{/autor}">Autores</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" th:href="@{/editorial}">Editorial</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/perfil}">Perfil</a>
+                        <li class="nav-item dropdown px-2">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Yo
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="nav-link" th:href="@{/perfil}">Perfil</a></li>
+                                <li><a class="nav-link" th:href="@{/prestamo/mis-prestamos/__true__}">En curso</a></li>
+                                <li><a class="nav-link" th:href="@{/prestamo/mis-prestamos/__false__}">Finalizado</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="nav-link" th:href="@{/logout}">Finalizar Sesión</a></li>
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn" th:href="@{/logout}">Finalizar Sesión</a>
-                        </li>
+
                     </ul>
 
                 </div>
@@ -80,15 +90,15 @@
                 <thead>
                     <tr>
                         <th scope="col">Titulo</th>
-                        <th scope="col">Autor</th>
-                        <th scope="col">Editorial</th>
+                        <th scope="col">Año</th>
+                        <th scope="col" th:text="${tipo} eq 'autor' ? 'Editorial': 'Autor'"></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="libro : ${libros}">
                         <td th:text="${libro.nombre}"></td>
-                        <td th:text="${libro.autor.nombre}"></td>
-                        <td th:text="${libro.editorial.nombre}"></td>
+                        <td th:text="${libro.anio}"></td>
+                        <td th:text="${tipo} eq 'autor' ? ${libro.editorial.nombre}: ${libro.autor.nombre}"></td>
                     </tr>
                 </tbody>
             </table>

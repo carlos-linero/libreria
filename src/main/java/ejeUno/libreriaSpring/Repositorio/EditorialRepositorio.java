@@ -12,4 +12,6 @@ public interface EditorialRepositorio extends JpaRepository<Editorial, String> {
 
     @Query("SELECT e FROM Editorial e WHERE e.estado = :estado")
     public List<Editorial> obtenerEditoriales(@Param("estado") Boolean estado);
+    
+    List<Editorial> findByEstado(Boolean estado);
 }

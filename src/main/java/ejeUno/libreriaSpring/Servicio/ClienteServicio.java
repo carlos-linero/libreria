@@ -110,7 +110,7 @@ public class ClienteServicio implements ValidacionInterface {
     public Cliente obtenerCliente(String id) throws Exception, MiExcepcion {
         try {
             //return autorRepositorio.obtenerAutores(true);
-            Cliente cliente = clienteRepositorio.findById(id).orElseThrow(() -> new MiExcepcion("Cliente no registrado"));
+            Cliente cliente = clienteRepositorio.findById(id).orElseThrow(() -> new MiExcepcion("Error al obtener cliente"));
             return cliente;
         } catch (MiExcepcion es) {
             throw es;
@@ -119,14 +119,10 @@ public class ClienteServicio implements ValidacionInterface {
         }
     }
         @Transactional(readOnly = true)
-    public Cliente obtenerCliente(String id, String correo) throws Exception, MiExcepcion {
+    public Cliente obtenerPerfil(String id) throws Exception, MiExcepcion {
         try {
-            //return autorRepositorio.obtenerAutores(true);
-            Optional<Cliente> aux = clienteRepositorio.obtenerPerfil(id, correo);
-            if (!aux.isPresent()) {
-                throw new MiExcepcion("Perfil no encontrado");
-            }
-            Cliente cliente = clienteRepositorio.obtenerPerfil(id, correo).get();
+         
+            Cliente cliente = clienteRepositorio.obtenerPerfil(id).orElseThrow(() -> new MiExcepcion("Error al obtener perfil"));
             return cliente;
         } catch (MiExcepcion es) {
             throw es;

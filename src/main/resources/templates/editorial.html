@@ -31,30 +31,41 @@
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                            <a class="nav-link" th:href="@{/cliente}">Cliente</a>
+                        <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
+                            <a class="nav-link" th:href="@{/cliente}">Clientes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/prestamo}">Prestamo</a>
+                            <a class="nav-link" th:href="@{/prestamo}" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">Prestamos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/libro}">Libro</a>
+                            <a class="nav-link" th:href="@{/libro}">Libros</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/autor}">Autor</a>
+                            <a class="nav-link" th:href="@{/autor}">Autores</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" th:href="@{/editorial}">Editorial</a>
+                            <a class="nav-link" aria-current="page" th:href="@{/editorial}">Editoriales</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/perfil}">Perfil</a>
-                        </li>
+
                         <li class="nav-item">
                             <a title="Agregar Editorial" data-bs-toggle="modal" class="btn"
-                                data-bs-target="#agregarEditorial" sec:authorize="hasRole('ADMIN')">Agregar Editorial</a>
+                                data-bs-target="#agregarEditorial" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">Agregar
+                                Editorial</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn" th:href="@{/logout}">Finalizar Sesión</a>
+                        <li class="nav-item dropdown px-2">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Yo
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="nav-link" th:href="@{/perfil}">Perfil</a></li>
+                                <li><a class="nav-link" th:href="@{/prestamo/mis-prestamos/__true__}">En curso</a></li>
+                                <li><a class="nav-link" th:href="@{/prestamo/mis-prestamos/__false__}">Finalizado</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="nav-link" th:href="@{/logout}">Finalizar Sesión</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
@@ -64,7 +75,7 @@
     <div th:if="${editoriales.isEmpty()}" class="text-center">
         <h5>No hay ninguna Editorial registrada</h5>
         <button title="Agregar Editorial" type="button" class="btn" data-bs-toggle="modal"
-            data-bs-target="#agregarEditorial" sec:authorize="hasRole('ADMIN')">
+            data-bs-target="#agregarEditorial" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
             Agregar Editorial
         </button>
     </div>
@@ -90,8 +101,8 @@
                     <tr>
                         <th scope="col">Editorial</th>
                         <th scope="col">Bibliografia</th>
-                        <th scope="col" sec:authorize="hasRole('ADMIN')">Editar</th>
-                        <th scope="col" sec:authorize="hasRole('ADMIN')">Des/Habilitar</th>
+                        <th scope="col" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">Editar</th>
+                        <th scope="col" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">Des/Habilitar</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -109,25 +120,25 @@
                             </button>
                         </td>
 
-                        <td th:if="${editorial.estado}" sec:authorize="hasRole('ADMIN')">
+                        <td th:if="${editorial.estado}" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
                             <button class="btn" title="Editar" type="button" data-bs-toggle="modal"
                                 th:attr="data-bs-target=|#modificar${editorial.id}|">
                                 <i class="far fa-edit"></i>
                             </button>
                         </td>
-                        <td th:unless="${editorial.estado}" sec:authorize="hasRole('ADMIN')">
+                        <td th:unless="${editorial.estado}" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
                             <button disabled class="btn" title="Editar" type="button">
                                 <i class="far fa-edit"></i>
                             </button>
                         </td>
 
-                        <td th:if="${editorial.estado}" sec:authorize="hasRole('ADMIN')">
+                        <td th:if="${editorial.estado}" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
                             <button class="btn" title="Deshabilitar" type="button" data-bs-toggle="modal"
                                 th:attr="data-bs-target=|#habilitarDeshabilitar${editorial.id}|">
                                 <i class="far fa-minus-square"></i>
                             </button>
                         </td>
-                        <td th:unless="${editorial.estado}" sec:authorize="hasRole('ADMIN')">
+                        <td th:unless="${editorial.estado}" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
                             <button class="btn" title="Habilitar" type="button" data-bs-toggle="modal"
                                 th:attr="data-bs-target=|#habilitarDeshabilitar${editorial.id}|">
                                 <i class="far fa-plus-square"></i>
@@ -139,10 +150,10 @@
         </div>
     </main>
     <!-- Editar editorial -->
-    <div class="table-responsive">
+    
         <div th:each="editorial : ${editoriales}">
-            <div class="modal fade" th:attr="id=|modificar${editorial.id}|" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
+            <div class="modal fade" th:attr="id=|modificar${editorial.id}|" tabindex="-1" aria-hidden="true" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Modificar Editorial</h5>
@@ -171,8 +182,8 @@
             </div>
             <!-- habilitar/deshabilitar editorial -->
             <div class="modal fade" th:attr="id=|habilitarDeshabilitar${editorial.id}|" tabindex="-1"
-                aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
+                aria-hidden="true" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title"
@@ -200,8 +211,8 @@
         </div>
         <!-- agregar editorial -->
         <div class="modal fade" id="agregarEditorial" tabindex="-1" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+            aria-hidden="true" sec:authorize="hasAnyRole('ADMIN', 'SUPER')">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Agregar Editorial</h5>

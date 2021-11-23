@@ -21,6 +21,7 @@ public class Prestamo {
     private LocalDate fechaPrestamo;
     @Column(nullable = false)
     private LocalDate fechaDevolucion;
+    private LocalDate fechaFinalizada;
     @Column(nullable = false)
     private Boolean estado;
     @Column(nullable = false)
@@ -37,9 +38,10 @@ public class Prestamo {
     public Prestamo() {
     }
 
-    public Prestamo(LocalDate fechaPrestamo, LocalDate fechaDevolucion, Boolean estado, Integer cantidad, Integer cantidadRegistro, Cliente cliente, Libro libro) {
+    public Prestamo(LocalDate fechaPrestamo, LocalDate fechaDevolucion, LocalDate fechaFinalizada, Boolean estado, Integer cantidad, Integer cantidadRegistro, Cliente cliente, Libro libro) {
         this.fechaPrestamo = fechaPrestamo;
         this.fechaDevolucion = fechaDevolucion;
+        this.fechaFinalizada = fechaFinalizada;
         this.estado = estado;
         this.cantidad = cantidad;
         this.cantidadRegistro = cantidadRegistro;
@@ -69,6 +71,14 @@ public class Prestamo {
 
     public void setFechaDevolucion(LocalDate fechaDevolucion) {
         this.fechaDevolucion = fechaDevolucion;
+    }
+
+    public LocalDate getFechaFinalizada() {
+        return fechaFinalizada;
+    }
+
+    public void setFechaFinalizada(LocalDate fechaFinalizada) {
+        this.fechaFinalizada = fechaFinalizada;
     }
 
     public Boolean getEstado() {
@@ -118,6 +128,8 @@ public class Prestamo {
     public static void setCompararNombre(Comparator<Prestamo> compararNombre) {
         Prestamo.compararNombre = compararNombre;
     }
+
+    
 
 
     public static Comparator<Prestamo> compararNombre = new Comparator<Prestamo>() {

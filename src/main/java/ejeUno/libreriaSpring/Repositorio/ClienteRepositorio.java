@@ -18,6 +18,6 @@ public interface ClienteRepositorio extends JpaRepository<Cliente, String> {
     @Query("SELECT c FROM Cliente c WHERE c.usuario.rol.nombre = :rol")
     public List<Cliente> obtenerClientexRol(@Param("rol") String rol);
     
-    @Query("SELECT c FROM Cliente c WHERE c.usuario.id = :id and c.usuario.correo = :correo")
-    public Optional<Cliente>  obtenerPerfil(@Param("id") String id, @Param("correo") String correo);
+    @Query("SELECT c FROM Cliente c WHERE c.usuario.id = :id")
+    public Optional<Cliente>  obtenerPerfil(@Param("id") String id);
 }
